@@ -150,14 +150,14 @@ const immersiveScroll = (p) => {
       generateAuroraSentence();
     }, 2000);
     
-    // Reduced bubble count
+    // Reduced bubble count and opacity for better blending
     for (let i = 0; i < 20; i++) {
       bubbles.push({
         x: p.random(p.width),
         y: p.random(p.height * 0.7, p.height),
-        size: p.random(10, 40),
-        speed: p.random(0.5, 2),
-        opacity: p.random(100, 200)
+        size: p.random(8, 30), // Slightly smaller
+        speed: p.random(0.4, 1.2), // Slightly slower for more grace
+        opacity: p.random(40, 90) // Much lower opacity for blending
       });
     }
     
@@ -178,53 +178,99 @@ const immersiveScroll = (p) => {
     // Initialize jellyfish (Just a few, one is bigger)
     for (let i = 0; i < 3; i++) {
       const isBig = (i === 0);
+      const isContactJelly = (i === 1); // Specific one for contact box area
+      
+      let xPos;
+      if (isContactJelly) {
+        // Position specifically on the left side, outside the 1000px centered box
+        // Assuming 1000px box, we want it in the left margin
+        xPos = p.random(p.width * 0.05, p.constrain((p.width - 1000) / 2 - 100, p.width * 0.05, p.width * 0.15));
+      } else {
+        xPos = p.random(p.width * 0.05, p.width * 0.4); // Mostly on the left
+      }
+
       jellyfish.push({
-        x: p.random(p.width * 0.05, p.width * 0.4), // Mostly on the left
-        y: p.random(p.height * 0.8, p.height * 1.5), // Start below or at bottom
-        size: isBig ? p.random(90, 120) : p.random(40, 60),
-        speed: isBig ? p.random(0.3, 0.5) : p.random(0.4, 0.8), // Big ones move slower
+        x: xPos,
+        y: isContactJelly ? p.random(p.height * 0.5, p.height * 1.2) : p.random(p.height * 0.8, p.height * 1.5), 
+        size: isContactJelly ? p.random(130, 160) : (isBig ? p.random(90, 120) : p.random(40, 60)),
+        speed: isContactJelly ? 0.3 : (isBig ? p.random(0.3, 0.5) : p.random(0.4, 0.8)), // Big ones move slower
         offset: p.random(p.TWO_PI), // For pulsing animation
-        // Ethereal cyan/blue with lower opacity for better translucency
-        color: p.color(150, 230, 255, 120) 
+        isContactJelly: isContactJelly,
+        // Ethereal colors for better translucency
+        color: p.color(150, 230, 255, 120),
+        secondaryColor: isContactJelly ? p.color(200, 150, 255, 100) : null,
+        accentColor: isContactJelly ? p.color(255, 255, 255, 180) : null
       });
     }
     
     // Initialize sea plants (Coral and Seaweed) concentrated in corners
-    for (let i = 0; i < 22; i++) {
-      // Decide which corner: left (0) or right (1)
+    const coralPalettes = [
+      { r: [200, 255], g: [80, 150], b: [100, 180] }, // Pink/Purple
+      { r: [255, 255], g: [120, 180], b: [50, 100] },  // Orange
+      { r: [100, 180], g: [200, 255], b: [220, 255] }, // Blue/Teal
+      { r: [255, 255], g: [200, 255], b: [100, 150] }, // Yellow/Gold
+      { r: [220, 240], g: [220, 240], b: [220, 240] }  // White/Ghost
+    ];
+
+    for (let i = 0; i < 24; i++) {
       const corner = p.random() > 0.5 ? 0 : 1;
       const xBase = corner === 0 ? p.random(0, p.width * 0.25) : p.random(p.width * 0.75, p.width);
       
       const type = p.random() > 0.4 ? 'seaweed' : 'coral';
-      
-      // For coral, pre-generate a detailed, organic branching structure
+      let coralSubType = 'fan';
       let coralStructure = [];
+      let plantColor;
+
       if (type === 'coral') {
-        const genStructure = (depth, maxDepth) => {
-          if (depth > maxDepth) return [];
-          let branches = [];
-          const numNext = depth === 0 ? p.random(2, 4) : (depth < 2 ? p.random(1, 3) : 1);
-          
-          for (let n = 0; n < numNext; n++) {
-            branches.push({
-              angle: p.random(-40, 40),
-              lenMult: p.random(0.7, 0.85),
-              children: genStructure(depth + 1, maxDepth)
-            });
-          }
-          return branches;
-        };
-        coralStructure = genStructure(0, 3); // Depth 3 for performance
+        const subTypeRoll = p.random();
+        if (subTypeRoll < 0.4) coralSubType = 'fan';
+        else if (subTypeRoll < 0.7) coralSubType = 'staghorn';
+        else if (subTypeRoll < 0.9) coralSubType = 'tube';
+        else coralSubType = 'brain';
+
+        const palette = p.random(coralPalettes);
+        plantColor = p.color(
+          p.random(palette.r[0], palette.r[1]),
+          p.random(palette.g[0], palette.g[1]),
+          p.random(palette.b[0], palette.b[1]),
+          220
+        );
+
+        if (coralSubType === 'fan' || coralSubType === 'staghorn') {
+          const genStructure = (depth, maxDepth) => {
+            if (depth > maxDepth) return [];
+            let branches = [];
+            let numNext;
+            if (coralSubType === 'fan') {
+              numNext = depth === 0 ? p.random(2, 4) : (depth < 2 ? p.random(1, 3) : 1);
+            } else {
+              numNext = depth === 0 ? 2 : (p.random() > 0.6 ? 1 : 0);
+            }
+            
+            for (let n = 0; n < numNext; n++) {
+              branches.push({
+                angle: coralSubType === 'fan' ? p.random(-40, 40) : p.random(-30, 30),
+                lenMult: coralSubType === 'fan' ? p.random(0.7, 0.85) : p.random(0.8, 0.9),
+                children: genStructure(depth + 1, maxDepth)
+              });
+            }
+            return branches;
+          };
+          coralStructure = genStructure(0, coralSubType === 'fan' ? 3 : 4);
+        }
+      } else {
+        plantColor = p.color(30, p.random(120, 200), 70, 180);
       }
+
+      const plantSize = type === 'coral' ? p.random(140, 260) : p.random(180, 350);
 
       seaPlants.push({
         x: xBase,
         y: p.height + p.random(20, 60), 
-        size: p.random(180, 350), 
+        size: plantSize, 
         type: type,
-        color: type === 'seaweed' ? 
-               p.color(30, p.random(120, 200), 70, 180) : 
-               p.color(p.random(200, 255), p.random(100, 180), p.random(120, 200), 220),
+        coralSubType: coralSubType,
+        color: plantColor,
         swayOffset: p.random(p.TWO_PI),
         swaySpeed: p.random(0.008, 0.015), 
         numBlades: Math.floor(p.random(3, 6)), 
@@ -328,11 +374,11 @@ const immersiveScroll = (p) => {
   function calculateZone() {
     // Define zone boundaries (0 to 1 scroll progress)
     const spaceEnd = 0.02;       // Space: 0% - 2%
-    const auroraEnd = 0.25;      // Aurora: 2% - 25%
-    const skyFull = 0.45;        // Sky fully blue at 45%
-    const sunsetStart = 0.55;    // Waves start appearing earlier at 55%
-    const sunsetEnd = 0.82;      // Sea surface level at 82%
-    // Deep Sea: 82% - 100%
+    const auroraEnd = 0.30;      // Aurora extended: 2% - 35%
+    const skyFull = 0.52;        // Sky fully blue later at 52%
+    const sunsetStart = 0.62;    // Sunset starts later at 62%
+    const sunsetEnd = 0.85;      // Sea surface level at 85%
+    // Deep Sea: 85% - 100%
     
     let space = 0;
     let aurora = 0;
@@ -1169,56 +1215,66 @@ const immersiveScroll = (p) => {
     
     // Draw the main body of water
     p.beginShape();
-    p.vertex(0, p.height); // Bottom left
-    p.vertex(-50, currentSeaY); // Top left (horizon start)
+    p.vertex(-100, p.height); // Bottom left
+    p.vertex(-100, currentSeaY); // Top left (horizon start)
     
-    const waveTime = p.frameCount * 0.025; // Increased speed for more dynamic movement
-    for (let x = -50; x <= p.width + 50; x += 15) {
-      // Create sharper peaks for a more "wave" like look
-      const freq = 0.008;
-      const baseWave = p.sin(x * freq + waveTime * 0.8);
-      const sharpWave = p.pow(p.map(baseWave, -1, 1, 0, 1), 1.5);
+    const waveTime = p.frameCount * 0.02; // Slower, more majestic wave speed
+    for (let x = -100; x <= p.width + 100; x += 15) {
+      // Combine two sine waves for rolling "interference" patterns
+      const freq1 = 0.005;
+      const freq2 = 0.012;
+      const baseWave1 = p.sin(x * freq1 + waveTime * 0.8);
+      const baseWave2 = p.sin(x * freq2 - waveTime * 0.4);
+      const combinedWave = (baseWave1 + baseWave2 * 0.4) / 1.4;
       
-      const noiseVal = p.noise(x * 0.004, waveTime * 0.3) * 20;
-      const y = currentSeaY - (sharpWave * 45) + noiseVal; // Increased amplitude
+      // Power function creates sharp peaks and flat troughs (cresting waves)
+      const sharpWave = p.pow(p.map(combinedWave, -1, 1, 0, 1), 2.2);
+      
+      const noiseVal = p.noise(x * 0.004, waveTime * 0.3) * 25;
+      const y = currentSeaY - (sharpWave * 65) + noiseVal; 
       p.vertex(x, y);
     }
     
-    p.vertex(p.width + 50, currentSeaY); // Top right
-    p.vertex(p.width, p.height); // Bottom right
+    p.vertex(p.width + 100, currentSeaY); // Top right
+    p.vertex(p.width + 100, p.height); // Bottom right
     p.endShape(p.CLOSE);
 
     // 2. Draw expressive wave lines (layers)
     const numLayers = 5; 
     for (let i = 0; i < numLayers; i++) {
-      const layerYOffset = i * 40; // More spacing between layers
-      const speedMult = 0.7 + i * 0.3;
-      const freqMult = 1.0 + i * 0.15;
-      const amplitude = (30 - i * 4) * 1.5; // Increased amplitude
+      const layerYOffset = i * 45; // Increased spacing
+      const speedMult = 0.6 + i * 0.25;
+      const freqMult = 1.0 + i * 0.12;
+      const amplitude = (35 - i * 4) * 1.6;
       
       p.noFill();
       
       const edgeAlpha = p.map(i, 0, numLayers - 1, 240, 60) * (seaAlpha / 255);
       const waveCol = p.lerpColor(p.color(255, 255, 255), seaSurfaceColor, i * 0.15);
       p.stroke(p.red(waveCol), p.green(waveCol), p.blue(waveCol), edgeAlpha);
-      p.strokeWeight(3.5 - i * 0.5); // Slightly thicker lines
+      p.strokeWeight(3.5 - i * 0.5);
       
       p.beginShape();
-      for (let x = -50; x <= p.width + 50; x += 12) {
-        const baseWave = p.sin(x * 0.008 * freqMult + waveTime * speedMult);
-        const sharpWave = p.pow(p.map(baseWave, -1, 1, 0, 1), 1.8);
+      for (let x = -100; x <= p.width + 100; x += 12) {
+        const freq1 = 0.006 * freqMult;
+        const freq2 = 0.015 * freqMult;
+        const baseWave1 = p.sin(x * freq1 + waveTime * speedMult);
+        const baseWave2 = p.sin(x * freq2 - waveTime * speedMult * 0.5);
+        const combinedWave = (baseWave1 + baseWave2 * 0.3) / 1.3;
         
-        const noiseVal = p.noise(x * 0.004, waveTime * 0.3 + i) * 15;
+        const sharpWave = p.pow(p.map(combinedWave, -1, 1, 0, 1), 2.0);
+        
+        const noiseVal = p.noise(x * 0.004, waveTime * 0.3 + i) * 18;
         const y = currentSeaY + layerYOffset - (sharpWave * amplitude) + noiseVal;
         
         p.vertex(x, y);
         
-        // Add "foam" glints at the peaks
-        if (sharpWave > 0.93 && p.random() > 0.7) {
+        // Add "foam" glints at the peaks - more prominent
+        if (sharpWave > 0.9 && p.random() > 0.6) {
           p.push();
-          p.stroke(255, 255, 255, edgeAlpha * 1.6);
-          p.strokeWeight(2.5);
-          p.point(x + p.random(-8, 8), y + p.random(-3, 3));
+          p.stroke(255, 255, 255, edgeAlpha * 1.8);
+          p.strokeWeight(3);
+          p.point(x + p.random(-10, 10), y + p.random(-5, 5));
           p.pop();
         }
       }
@@ -1362,14 +1418,17 @@ const immersiveScroll = (p) => {
         surfaceFade = p.map(bubble.y, horizonY + fadePadding, horizonY, 1.0, 0.0);
       }
       const finalOpacity = bubble.opacity * intensity * surfaceFade;
-      if (finalOpacity > 5) {
-        p.fill(255, 255, 255, finalOpacity);
-        p.stroke(200, 200, 255, finalOpacity * 0.5);
-        p.strokeWeight(1);
+      if (finalOpacity > 2) {
+        // Ethereal light blue tint for bubbles
+        p.fill(180, 230, 255, finalOpacity * 0.4);
+        p.stroke(220, 240, 255, finalOpacity * 0.6);
+        p.strokeWeight(0.8);
         p.ellipse(bubble.x, bubble.y, bubble.size);
-        p.fill(255, 255, 255, finalOpacity * 0.5);
+        
+        // Subtle highlight glint
         p.noStroke();
-        p.ellipse(bubble.x - bubble.size * 0.2, bubble.y - bubble.size * 0.2, bubble.size * 0.3);
+        p.fill(255, 255, 255, finalOpacity * 0.7);
+        p.ellipse(bubble.x - bubble.size * 0.22, bubble.y - bubble.size * 0.22, bubble.size * 0.25);
       }
     });
     p.pop();
@@ -1380,10 +1439,23 @@ const immersiveScroll = (p) => {
       const pulse = p.sin(p.frameCount * 0.04 + jelly.offset);
       const moveUp = p.map(pulse, -1, 1, 0.2, 1.2) * jelly.speed;
       jelly.y -= moveUp;
+      
+      // Ensure the contact jelly doesn't drift too far below screen
+      if (jelly.isContactJelly && jelly.y > p.height + 200) {
+        jelly.y = p.height + 50;
+      }
+
       jelly.x += p.sin(p.frameCount * 0.02 + jelly.offset) * 0.5;
       if (jelly.y < horizonY - jelly.size) {
-        jelly.y = p.height + jelly.size * 2;
-        jelly.x = p.random(p.width * 0.05, p.width * 0.5);
+        // Respawn logic: move to bottom of screen
+        jelly.y = p.height + jelly.size;
+        if (jelly.isContactJelly) {
+           jelly.x = p.random(p.width * 0.05, p.constrain((p.width - 1000) / 2 - 100, p.width * 0.05, p.width * 0.15));
+           // Give the contact jelly a little "boost" to get back on screen faster
+           jelly.y = p.height; 
+        } else {
+           jelly.x = p.random(p.width * 0.05, p.width * 0.5);
+        }
       }
       let surfaceFade = 1.0;
       if (jelly.y < horizonY + fadePadding) {
@@ -1396,23 +1468,58 @@ const immersiveScroll = (p) => {
         p.noFill();
         p.stroke(p.red(jelly.color), p.green(jelly.color), p.blue(jelly.color), finalAlpha * 0.4);
         p.strokeWeight(1.2);
-        for (let i = 0; i < 5; i++) {
-          const tOffset = i * 0.5;
+        
+        // Draw tentacles
+        const numTentacles = jelly.isContactJelly ? 8 : 5;
+        for (let i = 0; i < numTentacles; i++) {
+          const tOffset = i * (jelly.isContactJelly ? 0.3 : 0.5);
+          
+          if (jelly.isContactJelly && jelly.secondaryColor) {
+            const tCol = p.lerpColor(jelly.color, jelly.secondaryColor, i / numTentacles);
+            p.stroke(p.red(tCol), p.green(tCol), p.blue(tCol), finalAlpha * 0.5);
+          } else {
+            p.stroke(p.red(jelly.color), p.green(jelly.color), p.blue(jelly.color), finalAlpha * 0.4);
+          }
+
           p.beginShape();
-          for (let seg = 0; seg < 6; seg++) {
-            const tx = p.sin(p.frameCount * 0.08 + seg * 0.5 + tOffset) * (5 + seg * 2);
-            const ty = seg * (jelly.size * 0.22);
-            p.vertex(tx + (i - 2) * (jelly.size * 0.12), ty + jelly.size * 0.15);
+          for (let seg = 0; seg < (jelly.isContactJelly ? 10 : 6); seg++) {
+            const tSpeed = jelly.isContactJelly ? 0.04 : 0.08;
+            const tx = p.sin(p.frameCount * tSpeed + seg * 0.4 + tOffset) * (jelly.isContactJelly ? 8 + seg * 3 : 5 + seg * 2);
+            const ty = seg * (jelly.size * (jelly.isContactJelly ? 0.18 : 0.22));
+            p.vertex(tx + (i - (numTentacles/2)) * (jelly.size * 0.1), ty + jelly.size * 0.15);
           }
           p.endShape();
         }
+
         const pulseWidth = jelly.size * (1 + pulse * 0.1);
         const pulseHeight = jelly.size * 0.6 * (1 - pulse * 0.05);
+        
+        // Draw outer bell
         p.fill(p.red(jelly.color), p.green(jelly.color), p.blue(jelly.color), finalAlpha * 0.5);
+        if (jelly.isContactJelly && jelly.secondaryColor) {
+           const bellCol = p.lerpColor(jelly.color, jelly.secondaryColor, 0.3);
+           p.fill(p.red(bellCol), p.green(bellCol), p.blue(bellCol), finalAlpha * 0.6);
+        }
         p.noStroke();
         p.arc(0, 0, pulseWidth, pulseHeight, p.PI, p.TWO_PI, p.CHORD);
+        
+        // Draw inner bell / detail
         p.fill(p.red(jelly.color), p.green(jelly.color), p.blue(jelly.color), finalAlpha * 0.8);
+        if (jelly.isContactJelly && jelly.accentColor) {
+           p.fill(p.red(jelly.accentColor), p.green(jelly.accentColor), p.blue(jelly.accentColor), finalAlpha * 0.4);
+        }
         p.arc(0, 0, pulseWidth * 0.7, pulseHeight * 0.7, p.PI, p.TWO_PI, p.CHORD);
+        
+        // Highlight spots for contact jelly
+        if (jelly.isContactJelly) {
+          p.fill(255, 255, 255, finalAlpha * 0.6);
+          for(let s=0; s<4; s++) {
+            const sx = p.cos(s * p.HALF_PI + p.frameCount * 0.02) * pulseWidth * 0.25;
+            const sy = p.sin(s * p.HALF_PI + p.frameCount * 0.02) * pulseHeight * 0.15 - pulseHeight * 0.2;
+            p.circle(sx, sy, 3);
+          }
+        }
+
         p.fill(255, 255, 255, finalAlpha * 0.4);
         p.ellipse(0, -pulseHeight * 0.25, pulseWidth * 0.5, pulseHeight * 0.3);
         p.pop();
@@ -1476,7 +1583,16 @@ const immersiveScroll = (p) => {
           p.pop();
           p.ellipse(0, 0, fish.size, fish.size * 0.6);
           p.fill(p.red(fish.color), p.green(fish.color), p.blue(fish.color), finalFishAlpha * 0.8);
-          p.triangle(0, 0, -fish.size * 0.2, -fish.size * 0.4, fish.size * 0.1, -fish.size * 0.1);
+          
+          // Flapping half-round fin - pointed towards the tail
+          p.push();
+          const flap = p.sin(p.frameCount * 0.2 + fish.x * 0.05) * 20;
+          p.translate(-fish.size * 0.1, 0); // Moved slightly more back
+          p.rotate(p.radians(flap));
+          // Draw arc pointing towards the tail (left in local scaled space)
+          p.arc(0, 0, fish.size * 0.4, fish.size * 0.3, p.HALF_PI, p.PI + p.HALF_PI);
+          p.pop();
+          
           p.fill(255, 255, 255, finalFishAlpha);
           p.noStroke();
           p.ellipse(fish.size * 0.25, -fish.size * 0.1, fish.size * 0.15);
@@ -1516,13 +1632,61 @@ const immersiveScroll = (p) => {
           const bOffset = b * (plant.size * 0.08) - (plant.numBlades * 0.04 * plant.size);
           const bSway = p.sin(p.frameCount * plant.swaySpeed + plant.swayOffset + b * 0.5) * (plant.size * 0.12);
           const bHeight = plant.size * (0.7 + p.noise(i, b) * 0.4);
+          
+          // Shading: darker at the bottom and center
           const bCol = p.color(p.red(plant.color), p.green(plant.color) + b * 5, p.blue(plant.color), p.alpha(plant.color) * 0.8);
           p.fill(bCol);
+          
+          // Draw Main Blade with subtle ruffles
           p.beginShape();
-          p.vertex(bOffset - plant.size * 0.05, 0);
-          p.bezierVertex(bOffset - plant.size * 0.02 + bSway, -bHeight * 0.4, bOffset + plant.size * 0.05 + bSway * 1.5, -bHeight * 0.7, bOffset + bSway * 2, -bHeight);
-          p.bezierVertex(bOffset + plant.size * 0.08 + bSway * 1.2, -bHeight * 0.6, bOffset + plant.size * 0.1 + bSway, -bHeight * 0.3, bOffset + plant.size * 0.05, 0);
+          const segments = 12;
+          // Left edge
+          for (let s = 0; s <= segments; s++) {
+            const t = s / segments;
+            const sy = -bHeight * t;
+            const swayT = p.sin(t * p.PI + p.frameCount * 0.05 + b) * (plant.size * 0.03);
+            const ruffles = p.noise(t * 10, p.frameCount * 0.02) * (plant.size * 0.02);
+            const sx = bOffset - (plant.size * 0.05 * (1 - t)) + bSway * t + swayT - ruffles;
+            p.vertex(sx, sy);
+          }
+          // Right edge
+          for (let s = segments; s >= 0; s--) {
+            const t = s / segments;
+            const sy = -bHeight * t;
+            const swayT = p.sin(t * p.PI + p.frameCount * 0.05 + b) * (plant.size * 0.03);
+            const ruffles = p.noise(t * 10 + 100, p.frameCount * 0.02) * (plant.size * 0.02);
+            const sx = bOffset + (plant.size * 0.05 * (1 - t)) + bSway * t + swayT + ruffles;
+            p.vertex(sx, sy);
+          }
           p.endShape(p.CLOSE);
+          
+          // Add Mid-rib (Vein)
+          p.noFill();
+          p.stroke(p.red(bCol), p.green(bCol) + 30, p.blue(bCol), p.alpha(bCol) * 0.5);
+          p.strokeWeight(1.5);
+          p.beginShape();
+          for (let s = 0; s <= segments; s++) {
+            const t = s / segments;
+            const sy = -bHeight * t;
+            const swayT = p.sin(t * p.PI + p.frameCount * 0.05 + b) * (plant.size * 0.03);
+            const sx = bOffset + bSway * t + swayT;
+            p.vertex(sx, sy);
+          }
+          p.endShape();
+          
+          // Add some biological detail dots (dots/polyps)
+          if (p.frameCount % 2 === 0) { // Subtle animation
+             p.noStroke();
+             p.fill(255, 255, 255, 40);
+             for(let d=0; d<3; d++) {
+                const dt = p.noise(i, b, d) * 0.8;
+                const dy = -bHeight * dt;
+                const dSwayT = p.sin(dt * p.PI + p.frameCount * 0.05 + b) * (plant.size * 0.03);
+                const dx = bOffset + bSway * dt + dSwayT + (p.noise(d, i)-0.5) * (plant.size * 0.04);
+                p.circle(dx, dy, p.noise(i, d) * 3);
+             }
+          }
+          p.noStroke();
         }
       } else {
         // --- DETAILED ORGANIC CORAL ---
@@ -1531,39 +1695,104 @@ const immersiveScroll = (p) => {
         p.noFill();
         const tipColor = p.color(255, 255, 255, 200); 
         
-        const drawCoralBranch = (structure, len, weight, depth, maxDepth) => {
-          if (!structure || structure.length === 0) return;
-          structure.forEach((branch, idx) => {
-            p.push();
-            const lerpAmt = depth / maxDepth;
-            const branchCol = p.lerpColor(plant.color, tipColor, lerpAmt * 0.7);
-            p.stroke(branchCol);
-            const swayMag = 3 / (depth + 1);
-            p.rotate(p.radians(branch.angle + baseSway * swayMag));
-            p.strokeWeight(weight);
-            p.line(0, 0, 0, -len);
-            p.translate(0, -len);
-            if (depth >= 2) {
+        if (plant.coralSubType === 'fan' || plant.coralSubType === 'staghorn') {
+          const drawCoralBranch = (structure, len, weight, depth, maxDepth) => {
+            if (!structure || structure.length === 0) return;
+            structure.forEach((branch, idx) => {
               p.push();
-              p.noStroke();
-              p.fill(255, 255, 255, 100);
-              p.circle(0, 0, weight * 0.6);
+              const lerpAmt = depth / maxDepth;
+              const branchCol = p.lerpColor(plant.color, tipColor, lerpAmt * 0.7);
+              p.stroke(branchCol);
+              
+              // Different sway for fan vs staghorn
+              const swayMag = (plant.coralSubType === 'fan' ? 3 : 1.5) / (depth + 1);
+              p.rotate(p.radians(branch.angle + baseSway * swayMag));
+              
+              p.strokeWeight(weight);
+              p.line(0, 0, 0, -len);
+              p.translate(0, -len);
+              
+              // Fan coral has polyps at joints
+              if (plant.coralSubType === 'fan' && depth >= 2) {
+                p.push();
+                p.noStroke();
+                p.fill(255, 255, 255, 100);
+                p.circle(0, 0, weight * 0.6);
+                p.pop();
+              }
+              
+              drawCoralBranch(branch.children, len * branch.lenMult, weight * 0.75, depth + 1, maxDepth);
               p.pop();
-            }
-            drawCoralBranch(branch.children, len * branch.lenMult, weight * 0.75, depth + 1, maxDepth);
-            p.pop();
-          });
-        };
+            });
+          };
 
-        p.push();
-        p.stroke(plant.color);
-        const baseWeight = plant.size * 0.06;
-        p.strokeWeight(baseWeight);
-        const mainLen = plant.size * 0.25;
-        p.line(0, 0, 0, -mainLen);
-        p.translate(0, -mainLen);
-        drawCoralBranch(plant.coralStructure, mainLen, baseWeight * 0.8, 1, 3);
-        p.pop();
+          p.push();
+          p.stroke(plant.color);
+          const baseWeight = plant.size * (plant.coralSubType === 'fan' ? 0.06 : 0.08);
+          p.strokeWeight(baseWeight);
+          const mainLen = plant.size * 0.25;
+          p.line(0, 0, 0, -mainLen);
+          p.translate(0, -mainLen);
+          drawCoralBranch(plant.coralStructure, mainLen, baseWeight * 0.8, 1, plant.coralSubType === 'fan' ? 3 : 4);
+          p.pop();
+
+        } else if (plant.coralSubType === 'tube') {
+          // TUBE CORAL: Vertical tubes with glowing openings
+          const numTubes = 3 + Math.floor(p.noise(i) * 3);
+          for (let t = 0; t < numTubes; t++) {
+            const tx = (t - numTubes / 2) * (plant.size * 0.15);
+            const th = plant.size * (0.4 + p.noise(i, t) * 0.3);
+            const tw = plant.size * 0.08;
+            const tSway = baseSway * (5 + t * 2);
+            
+            p.push();
+            p.translate(tx, 0);
+            p.rotate(p.radians(tSway * 0.5));
+            
+            // Tube body
+            p.noStroke();
+            const tubeCol = p.lerpColor(plant.color, p.color(0, 20), 0.2);
+            p.fill(tubeCol);
+            p.rect(-tw/2, 0, tw, -th, tw/2);
+            
+            // Highlight
+            p.fill(255, 255, 255, 40);
+            p.rect(-tw/2, 0, tw/3, -th, tw/2);
+            
+            // Glowing top opening
+            p.fill(plant.color);
+            p.ellipse(0, -th, tw, tw/3);
+            p.fill(255, 255, 255, 150);
+            p.ellipse(0, -th, tw * 0.6, tw * 0.2);
+            p.pop();
+          }
+
+        } else if (plant.coralSubType === 'brain') {
+          // BRAIN CORAL: Bulbous rounded shape with noise pattern
+          const bSize = plant.size * 0.4;
+          const bSway = baseSway * 3;
+          
+          p.push();
+          p.rotate(p.radians(bSway));
+          p.noStroke();
+          p.fill(plant.color);
+          p.ellipse(0, -bSize/3, bSize, bSize * 0.8);
+          
+          // Brain-like "folds" using noise
+          p.stroke(0, 0, 0, 40);
+          p.strokeWeight(2);
+          p.noFill();
+          for (let f = 0; f < 8; f++) {
+            p.beginShape();
+            for (let s = 0; s < 10; s++) {
+              const ang = p.map(s, 0, 10, -p.PI, 0);
+              const r = bSize * 0.45 + p.noise(f, s, p.frameCount * 0.01) * 10;
+              p.vertex(p.cos(ang) * r, p.sin(ang) * r - bSize/3);
+            }
+            p.endShape();
+          }
+          p.pop();
+        }
       }
       p.pop();
     }
