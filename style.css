@@ -301,7 +301,7 @@ body {
 }
 
 .service-card {
-    padding: 40px 25px !important;
+    padding: 40px 20px !important;
     text-align: center;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
@@ -367,10 +367,10 @@ body {
 
 .service-title {
     font-family: 'Orbitron', sans-serif;
-    font-size: 19px;
+    font-size: 17px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
+    letter-spacing: 0.5px;
     margin-bottom: 12px;
     color: var(--text-primary);
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
