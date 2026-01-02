@@ -761,6 +761,18 @@ textarea.text-field {
     .glass-card {
         padding: 40px 20px;
     }
+
+    .second-line {
+        white-space: normal; /* Allow wrapping on mobile */
+        min-height: 2.5em; /* Extra height for potential 2-line wraps */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .slideElement {
+        line-height: 1.1;
+    }
     
     .features-list {
         grid-template-columns: 1fr;
