@@ -61,7 +61,7 @@ function initServicesIcons() {
         } 
         // Init Matrix (Index 4)
         else if (cardIndex === 4) {
-          const chars = ['/', '*', '+', '-', '·', '×', '÷', '≈', '∆', 'λ'];
+          const chars = ['/', '\\', '█', '▓', '▒', '░', '*', '+', '-', '·', '×', '÷', '≈', '∆', 'λ'];
           for (let i = 0; i < 25; i++) {
             const colRoll = p.random();
             let charCol;
@@ -309,7 +309,7 @@ function initServicesIcons() {
 
       
       function drawMatrixRain(p, t) {
-        const chars = ['/', '*', '+', '-', '·', '×', '÷', '≈', '∆', 'λ'];
+        const chars = ['/', '\\', '█', '▓', '▒', '░', '*', '+', '-', '·', '×', '÷', '≈', '∆', 'λ'];
         matrixChars.forEach(c => {
           c.y += c.speed;
           if (c.y > p.height) { 
