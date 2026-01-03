@@ -416,55 +416,124 @@ body {
 /* Portfolio Section */
 .project-list {
     list-style: none;
-    column-count: 3;
-    column-gap: 30px;
-    margin-top: 40px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 1fr;
+    gap: 30px;
+    margin-top: 60px;
 }
 
 .project-list li {
     break-inside: avoid;
-    margin-bottom: 30px;
-    transition: transform 0.3s ease;
-    animation: float infinite ease-in-out;
+    margin: 0;
 }
 
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+.project-card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.project-card-link::before,
+.project-card-link::after {
+    display: none !important;
+    content: none !important;
+}
+
+.project-card-link:hover {
+    transform: translateY(-8px);
+}
+
+.project-card-link:hover .project-card {
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.5);
+}
+
+.project-card {
+    padding: 20px !important;
+    text-align: center;
+    transition: box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 0 !important;
+    max-width: 100% !important;
+    min-height: 400px;
+    height: 100%;
+    overflow: hidden;
 }
 
 .image-container {
     position: relative;
-    aspect-ratio: 1; /* Force square shape */
+    aspect-ratio: 1;
     border-radius: 15px;
     overflow: hidden;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
     cursor: pointer;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
 }
 
-/* Ensure images (or placeholders) fill the container organically */
+.image-container:hover {
+    transform: scale(1.02);
+}
+
 .project-placeholder {
     width: 100%;
     height: 100%;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    border-radius: 10px;
 }
 
-.hover-bg {
+.project-anim-container {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(163, 39, 39, 0.8);
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    z-index: 1;
+    transition: filter 0.3s ease;
 }
 
-.image-container:hover .hover-bg {
-    opacity: 1;
+.image-container:hover .project-anim-container {
+    filter: blur(3px);
+}
+
+.project-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
+    line-height: 1.3;
+}
+
+.project-title:empty {
+    display: none;
+}
+
+.project-description {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin: 0;
+    padding-bottom: 10px;
+}
+
+.project-description:empty {
+    display: none;
+}
+
+.hover-bg {
+    display: none; /* Removed color overlay */
 }
 
 .hover-links {
@@ -474,19 +543,31 @@ body {
     transform: translate(-50%, -50%);
     opacity: 0;
     transition: opacity 0.3s ease;
+    z-index: 10;
+    pointer-events: none;
+    width: 50px;
+    height: 50px;
 }
 
 .image-container:hover .hover-links {
     opacity: 1;
 }
 
-.hover-links a {
-    display: inline-block;
+.hover-links::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 50px;
     height: 50px;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
     border-radius: 50%;
-    margin: 0 10px;
+    transition: transform 0.3s ease;
+}
+
+.image-container:hover .hover-links::before {
+    transform: translate(-50%, -50%) scale(1.1);
 }
 
 /* Skills Section */
@@ -783,7 +864,17 @@ textarea.text-field {
     }
     
     .project-list {
-        column-count: 1;
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+    
+    .project-card {
+        min-height: auto;
+        padding: 20px 15px !important;
+    }
+    
+    .image-container {
+        min-height: 200px;
     }
 }
 
