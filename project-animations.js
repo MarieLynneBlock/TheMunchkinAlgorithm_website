@@ -95,8 +95,8 @@ function initProjectAnimations() {
               // Sine wave parameters (unique for each particle)
               waveIndex: p.floor(p.random(numWaves)), // Which wave this particle belongs to (0-4)
               wavePhase: (i / numParticles) * p.TWO_PI * 2, // Phase along the wave
-              // Size and opacity
-              size: p.random(2, 4),
+              // Size and opacity (matching spirograph particle size)
+              size: 3,
               baseOpacity: p.random(180, 240)
             });
           }
@@ -291,42 +291,25 @@ function initProjectAnimations() {
           p.push();
           
           if (glowIntensity > 0 && glowColor) {
-            // Colored glow layers (radiating outward)
+            // Colored glow layers (radiating outward) - matching spirograph style
             const glowR = p.red(glowColor);
             const glowG = p.green(glowColor);
             const glowB = p.blue(glowColor);
             
-            // Outer glow (largest, most transparent, most colorful) - more subtle
-            p.fill(glowR, glowG, glowB, glowIntensity * 50);
+            // Outer glow (matching spirograph: radius 6, which is 2x the base size)
+            p.fill(glowR, glowG, glowB, glowIntensity * 80);
             p.noStroke();
-            p.circle(particle.currentX, particle.currentY, particle.size * 4.5);
-            
-            // Middle glow - reduced intensity
-            p.fill(glowR, glowG, glowB, glowIntensity * 70);
-            p.circle(particle.currentX, particle.currentY, particle.size * 3);
-            
-            // Inner glow (transitioning to white) - more subtle blend
-            const blendR = p.lerp(255, glowR, glowIntensity * 0.4);
-            const blendG = p.lerp(255, glowG, glowIntensity * 0.4);
-            const blendB = p.lerp(255, glowB, glowIntensity * 0.4);
-            p.fill(blendR, blendG, blendB, coreOpacity * 0.6);
-            p.circle(particle.currentX, particle.currentY, particle.size * 2);
+            p.circle(particle.currentX, particle.currentY, 6);
           } else {
-            // No colored glow - just white glow layers for chaos state
-            p.fill(240, 248, 255, coreOpacity * 0.2);
+            // No colored glow - just white glow for chaos state (matching spirograph style)
+            p.fill(230, 230, 250, coreOpacity * 80);
             p.noStroke();
-            p.circle(particle.currentX, particle.currentY, particle.size * 4);
-            
-            p.fill(240, 248, 255, coreOpacity * 0.4);
-            p.circle(particle.currentX, particle.currentY, particle.size * 3);
-            
-            p.fill(240, 248, 255, coreOpacity * 0.6);
-            p.circle(particle.currentX, particle.currentY, particle.size * 2);
+            p.circle(particle.currentX, particle.currentY, 6);
           }
           
-          // Core particle (always white, brightest)
+          // Core particle (always white, brightest) - matching spirograph: radius 3
           p.fill(255, 255, 255, coreOpacity);
-          p.circle(particle.currentX, particle.currentY, particle.size);
+          p.circle(particle.currentX, particle.currentY, 3);
           
           p.pop();
         });
@@ -357,15 +340,13 @@ function initProjectAnimations() {
             const lineOpacity = state === STATE_ORDER ? 100 : 100 * stateProgress;
             
             p.push();
-            // Lines have colored glow but are more subtle
+            // Lines with sound wave visual effects
             const lineR = p.red(waveColor);
             const lineG = p.green(waveColor);
             const lineB = p.blue(waveColor);
-            p.stroke(lineR, lineG, lineB, lineOpacity);
-            p.strokeWeight(1.2);
             p.noFill();
             
-            // Draw smooth curve connecting particles
+            // Draw smooth curve connecting particles with sound wave effect
             for (let i = 0; i < waveParticles.length - 1; i++) {
               const p1 = waveParticles[i];
               const p2 = waveParticles[i + 1];
@@ -373,6 +354,14 @@ function initProjectAnimations() {
               // Only draw if particles are close enough (part of the same wave segment)
               const dist = p.dist(p1.x, p1.y, p2.x, p2.y);
               if (dist < p.width * 0.15) {
+                // Outer glow layer (more transparent, wider)
+                p.stroke(lineR, lineG, lineB, lineOpacity * 0.3);
+                p.strokeWeight(3);
+                p.line(p1.x, p1.y, p2.x, p2.y);
+                
+                // Main wave line (more visible, core)
+                p.stroke(lineR, lineG, lineB, lineOpacity);
+                p.strokeWeight(1.5);
                 p.line(p1.x, p1.y, p2.x, p2.y);
               }
             }
@@ -407,6 +396,15 @@ function initProjectAnimations() {
         
         // Calculate spirograph point using hypotrochoid formula
         const ratio = (spiroR - spiror) / spiror;
+        
+        // Let theta grow indefinitely - the pattern will naturally loop
+        // Old points fade out automatically, so no need to reset
+        // Only reset if theta gets extremely large to prevent overflow
+        if (spiroTheta > p.TWO_PI * 100) {
+          spiroTheta = 0;
+          // Don't clear path - let it fade naturally for seamless overlap
+        }
+        
         const x = (spiroR - spiror) * p.cos(spiroTheta) + spirod * p.cos(ratio * spiroTheta);
         const y = (spiroR - spiror) * p.sin(spiroTheta) - spirod * p.sin(ratio * spiroTheta);
         
@@ -414,7 +412,7 @@ function initProjectAnimations() {
         spiroPath.push({ x: cx + x, y: cy + y, age: 0 });
         
         // Age all points and remove old ones (fade out effect)
-        const maxAge = 300; // Frames before complete fade
+        const maxAge = 4000; // Frames before complete fade (increased to keep more visible)
         spiroPath = spiroPath.filter(point => {
           point.age++;
           return point.age < maxAge;
@@ -471,12 +469,6 @@ function initProjectAnimations() {
         }
         
         p.pop();
-        
-        // Reset when pattern completes (optional - creates continuous loop)
-        if (spiroTheta > p.TWO_PI * 10) {
-          spiroTheta = 0;
-          spiroPath = [];
-        }
       }
 
       p.windowResized = () => {

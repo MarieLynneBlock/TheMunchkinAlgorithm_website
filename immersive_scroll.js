@@ -374,7 +374,7 @@ const immersiveScroll = (p) => {
   function calculateZone() {
     // Define zone boundaries (0 to 1 scroll progress)
     const spaceEnd = 0.02;       // Space: 0% - 2%
-    const auroraEnd = 0.30;      // Aurora extended: 2% - 35%
+    const auroraEnd = 0.12;      // Aurora: 2% - 12% (ended earlier for portfolio in blue sky)
     const skyFull = 0.52;        // Sky fully blue later at 52%
     const sunsetStart = 0.62;    // Sunset starts later at 62%
     const sunsetEnd = 0.85;      // Sea surface level at 85%
