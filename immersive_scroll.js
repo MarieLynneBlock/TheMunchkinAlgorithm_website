@@ -1,8 +1,17 @@
 /**
  * Immersive Scroll Animation
- * A p5.js sketch that creates a reactive background animation
- * that transitions through Space -> Aurora -> Sky -> Sea Surface -> Deep Sea
- * based on scroll position.
+ * 
+ * A p5.js sketch that creates a reactive background animation that transitions through
+ * different environmental zones based on scroll position:
+ * 
+ * 1. Space (0-2%): Stars, meteorites, rocket, satellite
+ * 2. Aurora (2-12%): Northern lights with L-system generation, enhanced stars
+ * 3. Sky (12-52%): Blue sky with clouds and birds
+ * 4. Sunset (62-85%): Warm sunset colors with sun setting, ocean waves
+ * 5. Deep Sea (85-100%): Underwater scene with bubbles, fish, jellyfish, coral, seaweed
+ * 
+ * Each zone has unique visual elements and smooth color transitions between zones.
+ * The animation responds to scroll position to create an immersive storytelling experience.
  */
 
 const immersiveScroll = (p) => {
@@ -155,7 +164,7 @@ const immersiveScroll = (p) => {
       bubbles.push({
         x: p.random(p.width),
         y: p.random(p.height * 0.7, p.height),
-        size: p.random(8, 30), // Slightly smaller
+        size: p.random(8, 30), // Bubble size range for visual variety
         speed: p.random(0.4, 1.2), // Slightly slower for more grace
         opacity: p.random(40, 90) // Much lower opacity for blending
       });
@@ -175,7 +184,7 @@ const immersiveScroll = (p) => {
       });
     }
     
-    // Initialize jellyfish (Just a few, one is bigger)
+    // Initialize jellyfish - small group with size variation for visual interest
     for (let i = 0; i < 3; i++) {
       const isBig = (i === 0);
       const isContactJelly = (i === 1); // Specific one for contact box area

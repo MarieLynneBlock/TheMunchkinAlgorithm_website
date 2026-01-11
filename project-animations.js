@@ -1,7 +1,17 @@
 /**
  * Project Generative Animations
- * Creates unique, abstract generative animations for each project card
- * using p5.js instance mode.
+ * 
+ * Creates unique, abstract generative animations for each project card using p5.js instance mode.
+ * Each project has its own distinct animation style that reflects the project's theme:
+ * - Sonic Alchemy: Wave patterns with particles forming sine waves
+ * - Harmony Beauty: Spirograph patterns with rainbow colors
+ * - DAW Plugins: Audio fader visualization with trails
+ * - Sound Architectures: Sequencer grid patterns
+ * - ChucK Etudes: Signal chain visualization with gradient zones
+ * - Fr0zzy: 8-bit pixel art llama with growing grass
+ * - TBA projects: Various experimental animations
+ * 
+ * Animations respond to hover state with color transitions and spotlight effects.
  */
 
 function initProjectAnimations() {
@@ -69,17 +79,23 @@ function initProjectAnimations() {
       let placeholder1Particles = [];
       let placeholder4Nodes = [];
       
-      // Animation states
-      const STATE_CHAOS = 0;      // Drifting chaos phase
-      const STATE_ORDERING = 1;    // Transitioning to order
-      const STATE_ORDER = 2;      // Sine wave order phase
-      const STATE_DISPERSING = 3; // Back to chaos
+      /**
+       * Animation State Machine for Sonic Alchemy
+       * Controls the transition between chaotic particle movement and ordered wave patterns
+       */
+      const STATE_CHAOS = 0;      // Particles drift randomly using Perlin noise
+      const STATE_ORDERING = 1;    // Particles transition from chaos to wave formation
+      const STATE_ORDER = 2;       // Particles form organized sine waves
+      const STATE_DISPERSING = 3;  // Particles transition back from waves to chaos
       
-      // State timing (as fractions of cycle)
+      /**
+       * State Timing Configuration (as fractions of total cycle)
+       * Total cycle duration is defined by cycleDuration (4000ms)
+       */
       const ORDERING_DURATION = 0.15;  // 15% of cycle - transition to order
-      const ORDER_DURATION = 0.45;    // 45% of cycle - maintain order (longer)
-      const DISPERSE_DURATION = 0.15;  // 15% of cycle - back to chaos
-      // Remaining 25% is chaos
+      const ORDER_DURATION = 0.45;     // 45% of cycle - maintain ordered wave state
+      const DISPERSE_DURATION = 0.15;  // 15% of cycle - transition back to chaos
+      // Remaining 25% of cycle is chaos state
 
       p.setup = () => {
         // Ensure container has width (may need to wait for layout)
@@ -405,7 +421,7 @@ function initProjectAnimations() {
             const glowG = p.green(baseColor);
             const glowB = p.blue(baseColor);
             
-            // Outer glow (slightly smaller: radius 5)
+            // Outer glow layer with radius 5 for particle visibility
             p.fill(glowR, glowG, glowB, glowIntensity * 80 * (1 + hoverProgress * 0.2)); // Slightly brighter on hover
             p.noStroke();
             p.circle(particle.currentX, particle.currentY, 5);
@@ -1154,11 +1170,11 @@ function initProjectAnimations() {
         
         p.pop();
         
-        // Draw Llama (8-bit pixel art - bigger with more detail, side view)
-        // Position llama so feet are on the grass line
-        const llamaHeight = pixelSize * 12; // Total llama height in pixels (bigger)
-        const llamaX = cx - (pixelSize * 5); // Center the llama (10 pixels wide)
-        const llamaY = grassBaseY - llamaHeight + p.floor(frozzyBobOffset); // Position so feet touch grass, with bobbing
+        // Draw Llama (8-bit pixel art style, side view)
+        // Position llama so feet align with the grass baseline
+        const llamaHeight = pixelSize * 12; // Total llama height in pixels (12 pixel units)
+        const llamaX = cx - (pixelSize * 5); // Center the llama horizontally (10 pixels wide)
+        const llamaY = grassBaseY - llamaHeight + p.floor(frozzyBobOffset); // Vertical position with bobbing animation
         
         p.push();
         p.noStroke();
@@ -1166,7 +1182,7 @@ function initProjectAnimations() {
         const llamaColor = p.color(p.red(activeLlamaColor), p.green(activeLlamaColor), p.blue(activeLlamaColor), 200 + hoverProgress * 55);
         p.fill(llamaColor);
         
-        // Classic 8-bit llama - side view, bigger with more detail
+        // Classic 8-bit llama pixel art - side view with detailed body parts
         // Head (larger with more definition)
         p.rect(llamaX + pixelSize * 2, llamaY, pixelSize * 3, pixelSize * 3); // Head main
         p.rect(llamaX + pixelSize * 3, llamaY - pixelSize, pixelSize, pixelSize * 2); // Ear (pointy, taller)
@@ -1424,7 +1440,7 @@ function initProjectAnimations() {
             p.strokeWeight(3);
             p.circle(cx, cy, pulse.radius);
             
-            // Inner layer (brightest, most visible)
+            // Inner layer with highest opacity for maximum visibility
             p.stroke(p.red(activeColor), p.green(activeColor), p.blue(activeColor), alpha);
             p.strokeWeight(2);
             p.circle(cx, cy, pulse.radius);

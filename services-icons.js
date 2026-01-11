@@ -1,7 +1,18 @@
 /**
  * Services Generative Icons
- * Creates unique, abstract generative animations for each service card
- * using p5.js instance mode.
+ * 
+ * Creates unique, abstract generative animations for each service card using p5.js instance mode.
+ * Each service has a distinct animation style:
+ * 
+ * - Index 0 (Intelligent Systems): Neural network visualization with animated connections
+ * - Index 1 (Creative Coding): Rotating 3D wireframe box with energy beams
+ * - Index 2 (Sound Design): Audio waveform visualization with frequency bars
+ * - Index 3 (Workshops): Expanding ripple effects with energy particles
+ * - Index 4 (Live Algorithms): Matrix-style digital rain effect
+ * - Index 5 (Strategy): Compass with rotating arrow and strategic grid
+ * 
+ * All animations use a unified color palette (aurora green, purple, cyan) and respond to
+ * visibility state for performance optimization.
  */
 
 function initServicesIcons() {
@@ -183,7 +194,7 @@ function initServicesIcons() {
           // Prominent spark at the tip
           p.fill(p.red(auroraGreen), p.green(auroraGreen), p.blue(auroraGreen), beamAlpha);
           p.noStroke();
-          p.circle(beamLen, 0, 2.5); // Slightly smaller spark
+          p.circle(beamLen, 0, 2.5); // Beam tip spark indicator
           p.pop();
         }
 

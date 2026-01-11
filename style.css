@@ -1,20 +1,27 @@
-/* Reset and Base Styles */
+/**
+ * CSS Reset and Base Styles
+ * Provides consistent baseline styling across all browsers
+ */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/**
+ * CSS Custom Properties (Variables)
+ * Centralized color and styling values for consistent theming
+ */
 :root {
-    --glass-bg: rgba(255, 255, 255, 0.1);
-    --glass-border: rgba(255, 255, 255, 0.2);
-    --text-primary: #ffffff;
-    --text-secondary: rgba(255, 255, 255, 0.9);
-    --accent-color: #a32727;
-    --aurora-green: #00ffb4;
-    --aurora-purple: #9632c8;
-    --sundown-orange: #FF8C42;
-    --sundown-purple: #9D4EDD;
+    --glass-bg: rgba(255, 255, 255, 0.1);        /* Glassmorphism background opacity */
+    --glass-border: rgba(255, 255, 255, 0.2);     /* Glassmorphism border opacity */
+    --text-primary: #ffffff;                      /* Primary text color (white) */
+    --text-secondary: rgba(255, 255, 255, 0.9);  /* Secondary text color (slightly transparent) */
+    --accent-color: #a32727;                      /* Accent color (dark red) */
+    --aurora-green: #00ffb4;                      /* Aurora animation green */
+    --aurora-purple: #9632c8;                     /* Aurora animation purple */
+    --sundown-orange: #FF8C42;                    /* Sunset animation orange */
+    --sundown-purple: #9D4EDD;                    /* Sunset animation purple */
 }
 
 body {
@@ -25,14 +32,14 @@ body {
     background-color: #050a10; /* Dark fallback background */
 }
 
-/* Fixed Canvas Background */
+/* Fixed Canvas Background - p5.js animated background layer */
 #canvas-bg {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: -1;
+    z-index: -1; /* Behind all content */
 }
 
 /* Navigation - Creative Space Theme */
@@ -150,18 +157,22 @@ body {
     padding-top: 100px;
 }
 
-/* Glass Card Effect */
+/**
+ * Glass Card Effect (Glassmorphism)
+ * Creates a frosted glass appearance with backdrop blur and semi-transparent background
+ * Used throughout the site for content containers
+ */
 .glass-card {
     background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);              /* Blurs content behind the card */
+    -webkit-backdrop-filter: blur(20px);      /* Safari compatibility */
     border: 1px solid var(--glass-border);
     border-radius: 20px;
     padding: 60px 40px;
     margin: 40px auto;
     width: 100%;
     max-width: 1000px;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); /* Subtle shadow for depth */
 }
 
 /* Hero Section */
@@ -571,17 +582,20 @@ body {
     transition: transform 0.4s ease; /* Smooth transition matching text blur */
 }
 
-/* Depth of Field Effect: Text blurs, animation stays sharp and scales */
-/* Target card when link is hovered (since link wraps the card) */
+/**
+ * Depth of Field Effect on Project Card Hover
+ * Creates a 3D-like focus effect where text blurs and the animation container scales up
+ * This draws attention to the animated preview while maintaining visual hierarchy
+ */
 .project-card-link:hover .project-card .project-title,
 .project-card-link:hover .project-card .project-description {
-    filter: blur(1.5px);
-    opacity: 0.8;
+    filter: blur(1.5px);  /* Blur text to create depth */
+    opacity: 0.8;         /* Slightly reduce opacity for focus effect */
 }
 
 .project-card-link:hover .project-card .image-container {
-    transform: scale(1.02); /* Slight zoom for 3D pop-out effect */
-    filter: none; /* Keep animation sharp */
+    transform: scale(1.02); /* Slight zoom creates 3D pop-out effect */
+    filter: none;           /* Keep animation sharp and clear */
 }
 
 .project-placeholder {
@@ -602,7 +616,7 @@ body {
 }
 
 .image-container:hover .project-anim-container {
-    filter: none; /* Removed blur - animations stay sharp */
+    filter: none; /* Maintains animation clarity during hover - no blur applied */
 }
 
 .project-title {
@@ -616,7 +630,7 @@ body {
     color: var(--text-primary);
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
     line-height: 1.3;
-    min-height: 2.6em; /* Fixed height for consistent title space (2 lines) */
+    min-height: 2.6em; /* Ensures consistent vertical spacing for titles, accommodating up to 2 lines */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -648,15 +662,15 @@ body {
 }
 
 .hover-bg {
-    display: none !important; /* Removed color overlay - Spotlight Effect handles darkening */
+    display: none !important; /* Color overlay disabled - darkening is handled by the Spotlight Effect animation */
 }
 
 .hover-links {
-    display: none !important; /* Removed UI overlay - Spotlight Effect animation is fully visible */
+    display: none !important; /* UI overlay disabled - Spotlight Effect provides full animation visibility */
 }
 
 .hover-links::before {
-    display: none !important; /* Removed UI overlay dot */
+    display: none !important; /* UI overlay indicator dot disabled */
 }
 
 /* Ensure portfolio card UI overlays are completely hidden */
@@ -959,7 +973,10 @@ textarea.text-field {
     font-size: 12px;
 }
 
-/* Responsive Design */
+/**
+ * Responsive Design - Mobile Breakpoint
+ * Adjusts layout and typography for screens 768px and below
+ */
 @media (max-width: 768px) {
     .nav-bar {
         flex-direction: column;
