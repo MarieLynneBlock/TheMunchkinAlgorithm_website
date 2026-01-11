@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Favicon Generator</title>
+    <!--
+        Favicon Generator Utility
+        This is a development tool for generating favicon images.
+        Draws a globe/network icon design and allows downloading in multiple sizes.
+    -->
     <style>
         body {
             display: flex;
@@ -41,11 +46,16 @@
     <button onclick="downloadFavicon(16)">Download 16x16 PNG</button>
     
     <script>
+        /**
+         * Draws the favicon design on a canvas
+         * @param {HTMLCanvasElement} canvas - The canvas element to draw on
+         * @param {number} size - The size of the canvas (width and height in pixels)
+         */
         function drawFavicon(canvas, size) {
             const ctx = canvas.getContext('2d');
-            const scale = size / 100;
+            const scale = size / 100; // Scale factor for proportional sizing
             
-            // Background circle
+            // Draw background circle with border
             ctx.fillStyle = '#0a1929';
             ctx.beginPath();
             ctx.arc(size/2, size/2, size/2 - 2, 0, Math.PI * 2);
@@ -55,22 +65,22 @@
             ctx.lineWidth = 2 * scale;
             ctx.stroke();
             
-            // Globe grid lines (longitude)
+            // Draw globe grid lines (longitude - vertical curves)
             ctx.strokeStyle = '#6bb6ff';
             ctx.lineWidth = 1.5 * scale;
             ctx.globalAlpha = 0.6;
             
-            // Vertical ellipse
+            // Vertical ellipse (longitude line)
             ctx.beginPath();
             ctx.ellipse(size/2, size/2, 40 * scale, 20 * scale, 0, 0, Math.PI * 2);
             ctx.stroke();
             
-            // Horizontal ellipse
+            // Horizontal ellipse (longitude line)
             ctx.beginPath();
             ctx.ellipse(size/2, size/2, 20 * scale, 40 * scale, 0, 0, Math.PI * 2);
             ctx.stroke();
             
-            // Globe grid lines (latitude)
+            // Draw globe grid lines (latitude - horizontal curves)
             ctx.strokeStyle = '#4a90e2';
             ctx.lineWidth = 1 * scale;
             ctx.globalAlpha = 0.5;
@@ -87,19 +97,20 @@
             ctx.ellipse(size/2, 70 * scale, 35 * scale, 8 * scale, 0, 0, Math.PI * 2);
             ctx.stroke();
             
-            // Central connection point
+            // Draw central connection point (globe center)
             ctx.globalAlpha = 0.9;
             ctx.fillStyle = '#00d4ff';
             ctx.beginPath();
             ctx.arc(size/2, size/2, 4 * scale, 0, Math.PI * 2);
             ctx.fill();
             
+            // Draw white center highlight
             ctx.fillStyle = '#ffffff';
             ctx.beginPath();
             ctx.arc(size/2, size/2, 2 * scale, 0, Math.PI * 2);
             ctx.fill();
             
-            // Small accent dots
+            // Draw small accent dots around the globe
             ctx.globalAlpha = 0.8;
             ctx.fillStyle = '#6bb6ff';
             
@@ -117,6 +128,10 @@
             });
         }
         
+        /**
+         * Downloads the favicon as a PNG file
+         * @param {number} size - The size of the favicon to download (16 or 32)
+         */
         function downloadFavicon(size) {
             const canvas = size === 32 ? document.getElementById('faviconCanvas') : document.getElementById('faviconCanvas16');
             const link = document.createElement('a');
@@ -125,7 +140,7 @@
             link.click();
         }
         
-        // Draw on both canvases
+        // Initialize: Draw favicon on both canvas sizes when page loads
         window.onload = function() {
             drawFavicon(document.getElementById('faviconCanvas'), 32);
             drawFavicon(document.getElementById('faviconCanvas16'), 16);

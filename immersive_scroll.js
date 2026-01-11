@@ -1,8 +1,17 @@
 /**
  * Immersive Scroll Animation
- * A p5.js sketch that creates a reactive background animation
- * that transitions through Space -> Aurora -> Sky -> Sea Surface -> Deep Sea
- * based on scroll position.
+ * 
+ * A p5.js sketch that creates a reactive background animation that transitions through
+ * different environmental zones based on scroll position:
+ * 
+ * 1. Space (0-2%): Stars, meteorites, rocket, satellite
+ * 2. Aurora (2-12%): Northern lights with L-system generation, enhanced stars
+ * 3. Sky (12-52%): Blue sky with clouds and birds
+ * 4. Sunset (62-85%): Warm sunset colors with sun setting, ocean waves
+ * 5. Deep Sea (85-100%): Underwater scene with bubbles, fish, jellyfish, coral, seaweed
+ * 
+ * Each zone has unique visual elements and smooth color transitions between zones.
+ * The animation responds to scroll position to create an immersive storytelling experience.
  */
 
 const immersiveScroll = (p) => {
@@ -155,7 +164,7 @@ const immersiveScroll = (p) => {
       bubbles.push({
         x: p.random(p.width),
         y: p.random(p.height * 0.7, p.height),
-        size: p.random(8, 30), // Slightly smaller
+        size: p.random(8, 30), // Bubble size range for visual variety
         speed: p.random(0.4, 1.2), // Slightly slower for more grace
         opacity: p.random(40, 90) // Much lower opacity for blending
       });
@@ -175,7 +184,7 @@ const immersiveScroll = (p) => {
       });
     }
     
-    // Initialize jellyfish (Just a few, one is bigger)
+    // Initialize jellyfish - small group with size variation for visual interest
     for (let i = 0; i < 3; i++) {
       const isBig = (i === 0);
       const isContactJelly = (i === 1); // Specific one for contact box area
@@ -987,21 +996,25 @@ const immersiveScroll = (p) => {
    * @param {number} intensity - Zone intensity (0-1)
    */
   function drawAuroraElements(intensity) {
+    // Cache canvas dimensions
+    const w = p.width;
+    const h = p.height;
+    
     // Draw aurora waves
-    const baseHeight = p.height * 0.5 - maxWaveHeight;
+    const baseHeight = h * 0.5 - maxWaveHeight;
     const baselineOffsets = [];
     const secondWaveOffsets = [];
     
     // Increased sample step for better performance (was 15, now 20)
     const sampleStep = 20;
     
-    for (let i = 0; i < p.width; i += sampleStep) {
+    for (let i = 0; i < w; i += sampleStep) {
       const waveOffset = p.noise(i * noiseScale, yPosNoiseOffset) * maxWaveHeight + 
                          Math.sin(i * 0.004) * maxWaveHeight * 10 + i * 0.2;
       baselineOffsets.push(baseHeight + waveOffset);
       const secondWaveOffset = p.noise(i * noiseScale, yPosNoiseOffset + 1000) * maxWaveHeight * 0.5 + 
-                               Math.sin(i * 0.009) * maxWaveHeight * 5 + (p.width - i) * 0.1;
-      secondWaveOffsets.push(p.height * 0.35 + secondWaveOffset);
+                               Math.sin(i * 0.009) * maxWaveHeight * 5 + (w - i) * 0.1;
+      secondWaveOffsets.push(h * 0.35 + secondWaveOffset);
     }
     
     // Draw aurora waves with L-system based stroke weights
@@ -1010,7 +1023,7 @@ const immersiveScroll = (p) => {
       const x = i * sampleStep;
       const baseY = baselineOffsets[i];
       const secondBaseY = secondWaveOffsets[i];
-      const lineHeight = p.map(p.noise(x * noiseScale, yPosNoiseOffset), 0, 1.5, 0, p.height - 2);
+      const lineHeight = p.map(p.noise(x * noiseScale, yPosNoiseOffset), 0, 1.5, 0, h - 2);
       
       const strokeIndex = i % auroraSentence.length;
       // Increased stroke weight multiplier for brighter aurora
@@ -1044,8 +1057,8 @@ const immersiveScroll = (p) => {
       }
       
       // Second wave layer - brighter and more visible
-      if (intensity > 0.2 && secondBaseY > 0 && secondBaseY < p.height) {
-        const secondLineHeight = Math.min(maxHeight * 0.8, p.height * 0.5);
+      if (intensity > 0.2 && secondBaseY > 0 && secondBaseY < h) {
+        const secondLineHeight = Math.min(maxHeight * 0.8, h * 0.5);
         for (let j = 0; j < secondLineHeight; j += verticalStep) {
           const gradientRatio = j / secondLineHeight;
           const interColor = p.lerpColor(auroraGreen, auroraPurple, gradientRatio);

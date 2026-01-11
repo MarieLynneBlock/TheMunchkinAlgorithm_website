@@ -6,12 +6,23 @@
     <title>The Munchkin Algorithm</title>
     
     <!-- Favicon - Multiple formats for cross-browser support -->
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <!-- All favicon files are in img/ folder -->
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+    <!-- PNG formats for modern browsers with transparency -->
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
+    <!-- SVG for modern browsers that support it -->
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+    <!-- Apple touch icon for iOS -->
+    <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png">
+    <!-- Web manifest -->
+    <link rel="manifest" href="site.webmanifest">
     <link rel="manifest" href="/site.webmanifest">
     
     <!-- Google Fonts -->
@@ -24,10 +35,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
 </head>
 <body>
-    <!-- Fixed p5.js canvas background -->
+    <!-- Fixed p5.js canvas background - animated scroll-based background layer -->
     <div id="canvas-bg"></div>
     
-    <!-- Navigation -->
+    <!-- Main Navigation Bar - Fixed header with glassmorphism effect -->
     <header class="top-header">
         <nav class="nav-bar">
             <ul>
@@ -147,8 +158,6 @@
                                 <h3 class="project-title">Harmony in Algorithmic Beauty</h3>
                                 <div class="image-container">
                                     <div class="project-anim-container" data-project="harmony-beauty"></div>
-                                    <div class="hover-bg"></div>
-                                    <div class="hover-links"></div>
                                 </div>
                                 <p class="project-description">A research exploration into the synergy of generative algorithms. This project utilises L-Systems to drive simultaneous visual and musical generation, investigating the algorithmic bond between sight and sound.</p>
                             </div>
@@ -387,22 +396,36 @@
 
     <script>
         // Text slider functionality
+        /**
+         * Text Slider Functionality
+         * Rotates through hero section text phrases every 3 seconds
+         */
         const slideElements = document.querySelectorAll('.slideElement');
         let currentSlide = 0;
         
         function rotateText() {
+            // Hide current slide
             slideElements[currentSlide].classList.remove('active');
+            // Move to next slide (wraps to 0 when reaching end)
             currentSlide = (currentSlide + 1) % slideElements.length;
+            // Show new slide
             slideElements[currentSlide].classList.add('active');
         }
         
+        // Rotate text every 3 seconds
         setInterval(rotateText, 3000);
         
-        // Smooth scrolling for navigation
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        /**
+         * Smooth Scrolling for Navigation Links
+         * Intercepts anchor link clicks and smoothly scrolls to target sections
+         * Optimized: Cache querySelectorAll result and use event delegation
+         */
+        const anchorLinks = document.querySelectorAll('a[href^="#"]');
+        anchorLinks.forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
+                const href = this.getAttribute('href');
+                const target = document.querySelector(href);
                 if (target) {
                     target.scrollIntoView({
                         behavior: 'smooth',
@@ -412,11 +435,15 @@
             });
         });
         
-        // Contact Form EmailJS Integration
+        /**
+         * Contact Form EmailJS Integration
+         * Handles form submission and sends emails via EmailJS service
+         * 
+         * Note: EmailJS Public Keys are safe to expose - they're designed for client-side use.
+         * Security is handled by rate limiting and Service/Template restrictions on the EmailJS platform.
+         */
         (function() {
-            // Initialize EmailJS
-            // Note: EmailJS Public Keys are safe to expose - they're designed for client-side use
-            // Security is handled by rate limiting and Service/Template restrictions
+            // Initialize EmailJS with public key
             emailjs.init('CKqmqfNtqAJHexc8m');
             
             const contactForm = document.getElementById('contact-form');
@@ -425,7 +452,7 @@
                 contactForm.addEventListener('submit', function(e) {
                     e.preventDefault();
                     
-                    // Get form data
+                    // Extract form data and prepare for EmailJS
                     const formData = {
                         from_name: contactForm.name.value,
                         from_email: contactForm.email.value,
@@ -433,54 +460,55 @@
                         message: contactForm.message.value
                     };
                     
-                    // Debug: Log form data
+                    // Debug: Log form data (remove in production if desired)
                     console.log('Sending form data:', formData);
                     
-                    // Show loading state
+                    // Update button to show loading state
                     const submitButton = contactForm.querySelector('input[type="submit"]');
                     const originalValue = submitButton.value;
                     submitButton.value = 'Sending...';
                     submitButton.disabled = true;
                     
-                    // Send email via EmailJS
+                    // Send email via EmailJS service
+                    // Parameters: service ID, template ID, form data object
                     emailjs.send('service_295ixmi', 'template_0oimcmn', formData)
                         .then(function(response) {
-                            // Success
+                            // Email sent successfully
                             submitButton.value = 'Sent!';
-                            submitButton.style.background = '#4a7c59';
+                            submitButton.style.background = '#4a7c59'; // Green success color
                             
-                            // Show success message
+                            // Show success notification
                             alert('Thank you! Your message has been sent successfully.');
                             
-                            // Reset form
+                            // Clear form fields
                             contactForm.reset();
                             
-                            // Reset button after 3 seconds
+                            // Restore button to original state after 3 seconds
                             setTimeout(() => {
                                 submitButton.value = originalValue;
                                 submitButton.style.background = '';
                                 submitButton.disabled = false;
                             }, 3000);
                         }, function(error) {
-                            // Error
+                            // Email sending failed
                             submitButton.value = 'Error';
-                            submitButton.style.background = '#ff0000';
+                            submitButton.style.background = '#ff0000'; // Red error color
                             
-                            // Log detailed error for debugging
+                            // Log detailed error information for debugging
                             console.error('EmailJS Error Details:', {
                                 status: error.status,
                                 text: error.text,
                                 error: error
                             });
                             
-                            // Show user-friendly error message
+                            // Construct user-friendly error message
                             let errorMessage = 'Sorry, there was an error sending your message.';
                             if (error.text) {
                                 errorMessage += '\n\nError: ' + error.text;
                             }
                             alert(errorMessage);
                             
-                            // Reset button after 3 seconds
+                            // Restore button to original state after 3 seconds
                             setTimeout(() => {
                                 submitButton.value = originalValue;
                                 submitButton.style.background = '';
