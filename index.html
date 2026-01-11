@@ -158,8 +158,6 @@
                                 <h3 class="project-title">Harmony in Algorithmic Beauty</h3>
                                 <div class="image-container">
                                     <div class="project-anim-container" data-project="harmony-beauty"></div>
-                                    <div class="hover-bg"></div>
-                                    <div class="hover-links"></div>
                                 </div>
                                 <p class="project-description">A research exploration into the synergy of generative algorithms. This project utilises L-Systems to drive simultaneous visual and musical generation, investigating the algorithmic bond between sight and sound.</p>
                             </div>
@@ -420,11 +418,14 @@
         /**
          * Smooth Scrolling for Navigation Links
          * Intercepts anchor link clicks and smoothly scrolls to target sections
+         * Optimized: Cache querySelectorAll result and use event delegation
          */
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        const anchorLinks = document.querySelectorAll('a[href^="#"]');
+        anchorLinks.forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
+                const href = this.getAttribute('href');
+                const target = document.querySelector(href);
                 if (target) {
                     target.scrollIntoView({
                         behavior: 'smooth',

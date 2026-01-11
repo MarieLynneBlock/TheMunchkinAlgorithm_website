@@ -227,11 +227,6 @@ function initProjectAnimations() {
         }
       };
       
-      // Unified color palette (rest state)
-      const unifiedWhite = p.color(255, 255, 255);
-      const unifiedLightCyan = p.color(200, 240, 255);
-      const unifiedPaleBlue = p.color(180, 220, 255);
-      
       function getCurrentState(cycleProgress) {
         if (cycleProgress < ORDERING_DURATION) {
           return STATE_ORDERING;
@@ -257,6 +252,12 @@ function initProjectAnimations() {
       }
       
       function drawSonicAlchemy(p) {
+        // Cache canvas dimensions to avoid repeated property access
+        const w = p.width;
+        const h = p.height;
+        const cx = w / 2;
+        const cy = h / 2;
+        
         // Unified colors for rest state (soft white/ice blue for clean look on sky)
         const restWhite = p.color(255, 255, 255);
         const restIceBlue = p.color(200, 230, 255); // Soft ice blue
@@ -278,8 +279,6 @@ function initProjectAnimations() {
         const state = getCurrentState(cycleProgress);
         const stateProgress = getStateProgress(cycleProgress, state);
         
-        const cx = p.width / 2;
-        const cy = p.height / 2;
         const t = p.frameCount * 0.01;
         
         // Sine wave parameters (3 waves spread evenly across canvas)
@@ -287,10 +286,10 @@ function initProjectAnimations() {
         const waveAmplitudes = [35, 40, 35]; // Different amplitudes for each wave
         const waveFrequencies = [1.8, 2.0, 1.6]; // Different frequencies
         // Spread waves evenly across the canvas with padding
-        const padding = p.height * 0.15; // Top and bottom padding
-        const availableHeight = p.height - (padding * 2);
+        const padding = h * 0.15; // Top and bottom padding
+        const availableHeight = h - (padding * 2);
         const waveSpacing = availableHeight / (numWaves + 1); // Vertical spacing between waves
-        const waveWidth = p.width * 0.8; // Width of the wave area
+        const waveWidth = w * 0.8; // Width of the wave area
         const waveSpeed = 0.02; // Speed of wave animation
         
         // Update red dot phases based on state
@@ -315,8 +314,8 @@ function initProjectAnimations() {
             particle.noiseX += noiseScale * driftSpeed;
             particle.noiseY += noiseScale * driftSpeed;
             
-            const noiseX = p.noise(particle.noiseX) * p.width;
-            const noiseY = p.noise(particle.noiseY) * p.height;
+            const noiseX = p.noise(particle.noiseX) * w;
+            const noiseY = p.noise(particle.noiseY) * h;
             
             particle.x = p.lerp(particle.x, noiseX, 0.05);
             particle.y = p.lerp(particle.y, noiseY, 0.05);
@@ -368,8 +367,8 @@ function initProjectAnimations() {
             particle.noiseX += noiseScale * driftSpeed;
             particle.noiseY += noiseScale * driftSpeed;
             
-            const noiseX = p.noise(particle.noiseX) * p.width;
-            const noiseY = p.noise(particle.noiseY) * p.height;
+            const noiseX = p.noise(particle.noiseX) * w;
+            const noiseY = p.noise(particle.noiseY) * h;
             
             // Update chaos target smoothly
             particle.x = p.lerp(particle.x, noiseX, 0.05);
@@ -479,7 +478,7 @@ function initProjectAnimations() {
               const prev = waveParticles[idx - 1];
               const dist = p.dist(particle.x, particle.y, prev.x, prev.y);
               // Stricter distance check to prevent cross-wave connections
-              return dist < p.width * 0.12;
+              return dist < w * 0.12;
             });
             
             if (continuousWave.length > 2) {
@@ -523,8 +522,8 @@ function initProjectAnimations() {
             // In chaos/dispersing states: move with Perlin noise (slowly, like particles)
             const noiseTime = t * 0.1; // Much slower time multiplier
             const noiseOffset = redDotPhases[waveIndex] * 100;
-            const noiseX = p.noise(noiseOffset, noiseTime) * p.width;
-            const noiseY = p.noise(noiseOffset + 1000, noiseTime) * p.height;
+            const noiseX = p.noise(noiseOffset, noiseTime) * w;
+            const noiseY = p.noise(noiseOffset + 1000, noiseTime) * h;
             
             dotX = noiseX;
             dotY = noiseY;
@@ -563,21 +562,25 @@ function initProjectAnimations() {
       }
       
       function drawHarmonyBeauty(p) {
+        // Cache canvas dimensions
+        const w = p.width;
+        const h = p.height;
+        const cx = w / 2;
+        const cy = h / 2;
+        
         // Rest state colors (soft white/ice blue for clean look on sky)
         const restWhite = p.color(255, 255, 255);
         const restIceBlue = p.color(200, 230, 255);
         
-        const cx = p.width / 2;
-        const cy = p.height / 2;
         const numParticles = 3; // Number of particles drawing the spirograph
         
         // Initialize spirograph parameters and particles (only once)
         if (spiroParticles.length === 0) {
           // Initialize multiple particles with different spirograph parameters
           // This creates distinct patterns that don't overlap
-          const baseR = p.width * 0.25;  // Base outer radius
-          const baser = p.width * 0.08;   // Base inner radius
-          const based = p.width * 0.12;   // Base distance
+          const baseR = w * 0.25;  // Base outer radius
+          const baser = w * 0.08;   // Base inner radius
+          const based = w * 0.12;   // Base distance
           
           for (let i = 0; i < numParticles; i++) {
             // Vary parameters for each particle to create different patterns
@@ -707,6 +710,10 @@ function initProjectAnimations() {
       }
 
       function drawDAWPlugins(p) {
+        // Cache canvas dimensions
+        const w = p.width;
+        const h = p.height;
+        
         // Rest state colors (soft white/ice blue for clean look on sky)
         const restWhite = p.color(255, 255, 255);
         const restIceBlue = p.color(200, 230, 255);
@@ -716,8 +723,8 @@ function initProjectAnimations() {
         
         const t = p.frameCount * 0.01;
         const numFaders = 5;
-        const padding = p.width * 0.15;
-        const trackAreaWidth = p.width - (padding * 2);
+        const padding = w * 0.15;
+        const trackAreaWidth = w - (padding * 2);
         const trackSpacing = trackAreaWidth / (numFaders + 1);
         const maxTrailLength = 50;
         
@@ -728,7 +735,7 @@ function initProjectAnimations() {
             faders.push({
               trackX: trackX,
               trail: [],
-              y: p.height / 2, // Start at center
+              y: h / 2, // Start at center
               phase: p.random(p.TWO_PI), // Random phase for sine wave
               noiseOffset: p.random(1000) // Random noise offset
             });
@@ -744,8 +751,8 @@ function initProjectAnimations() {
           const combined = sineComponent + noiseComponent * 0.7;
           
           // Map to vertical position (with padding)
-          const verticalPadding = p.height * 0.15;
-          const availableHeight = p.height - (verticalPadding * 2);
+          const verticalPadding = h * 0.15;
+          const availableHeight = h - (verticalPadding * 2);
           fader.y = verticalPadding + p.map(combined, -1, 1, availableHeight, 0);
           
           // Add current position to trail
@@ -762,7 +769,7 @@ function initProjectAnimations() {
           p.stroke(255, 255, 255, 100); // Pure white RGB values, good opacity
           p.strokeWeight(1);
           p.noFill();
-          p.line(fader.trackX, verticalPadding, fader.trackX, p.height - verticalPadding);
+          p.line(fader.trackX, verticalPadding, fader.trackX, h - verticalPadding);
           p.pop();
           
           // Draw fading trail - lerp from rest white to mint green
@@ -818,6 +825,10 @@ function initProjectAnimations() {
       }
 
       function drawSoundArch(p) {
+        // Cache canvas dimensions
+        const w = p.width;
+        const h = p.height;
+        
         // Rest state colors (soft white/ice blue for clean look on sky)
         const restWhite = p.color(255, 255, 255);
         const restIceBlue = p.color(200, 230, 255);
@@ -829,9 +840,9 @@ function initProjectAnimations() {
         // Grid parameters
         const gridCols = 8; // 8 columns (steps)
         const gridRows = 4; // 4 rows (tracks/instruments)
-        const padding = p.width * 0.2;
-        const gridWidth = p.width - (padding * 2);
-        const gridHeight = p.height - (padding * 2);
+        const padding = w * 0.2;
+        const gridWidth = w - (padding * 2);
+        const gridHeight = h - (padding * 2);
         const cellWidth = gridWidth / gridCols;
         const cellHeight = gridHeight / gridRows;
         
@@ -868,8 +879,8 @@ function initProjectAnimations() {
         const currentStep = p.floor(loopProgress * gridCols);
         
         // Draw grid
-        const centerX = p.width / 2;
-        const centerY = p.height / 2;
+        const centerX = w / 2;
+        const centerY = h / 2;
         const gridStartX = centerX - gridWidth / 2;
         const gridStartY = centerY - gridHeight / 2;
         
@@ -925,6 +936,10 @@ function initProjectAnimations() {
       }
 
       function drawChuckEtudes(p) {
+        // Cache canvas dimensions
+        const w = p.width;
+        const h = p.height;
+        
         // Rest state colors (soft white/ice blue for clean look on sky)
         const restWhite = p.color(255, 255, 255);
         const restIceBlue = p.color(200, 230, 255);
@@ -943,10 +958,10 @@ function initProjectAnimations() {
         const activeZone2 = p.lerpColor(restColor, zone2Color, hoverProgress);
         const activeZone3 = p.lerpColor(restColor, zone3Color, hoverProgress);
         
-        const cy = p.height / 2; // Center vertically
-        const waveAmplitude = p.height * 0.25; // Wave height
-        const zone1End = p.width / 3; // End of Zone 1 (Source: Sine)
-        const zone2End = (p.width * 2) / 3; // End of Zone 2 (Modulation: Square/Triangle)
+        const cy = h / 2; // Center vertically
+        const waveAmplitude = h * 0.25; // Wave height
+        const zone1End = w / 3; // End of Zone 1 (Source: Sine)
+        const zone2End = (w * 2) / 3; // End of Zone 2 (Modulation: Square/Triangle)
         
         // Increment time for continuous flow
         signalChainTime += 0.05;
@@ -1038,6 +1053,9 @@ function initProjectAnimations() {
       }
 
       function drawFrozzy(p) {
+        // Cache canvas dimensions
+        const w = p.width;
+        const h = p.height;
         // Rest state colors (soft white/ice blue for clean look on sky)
         const restWhite = p.color(255, 255, 255);
         const restIceBlue = p.color(200, 230, 255);
@@ -1053,11 +1071,11 @@ function initProjectAnimations() {
         
         // Pixel art settings
         const pixelSize = 5; // Chunky pixel size
-        const cx = p.width / 2;
-        const cy = p.height / 2;
+        const cx = w / 2;
+        const cy = h / 2;
         
         // Initialize grass growth arrays if needed
-        const numGrassBlocks = p.floor(p.width / pixelSize);
+        const numGrassBlocks = p.floor(w / pixelSize);
         if (frozzyGrassGrowth.length !== numGrassBlocks) {
           frozzyGrassGrowth = [];
           frozzyGrassGrowthRates = [];
@@ -1119,7 +1137,7 @@ function initProjectAnimations() {
         });
         
         // Draw grass at bottom (growing upward in pixel art style)
-        const grassBaseY = p.height - pixelSize * 2;
+        const grassBaseY = h - pixelSize * 2;
         
         p.push();
         p.noStroke();
@@ -1226,6 +1244,10 @@ function initProjectAnimations() {
       }
 
       function drawTBA1(p) {
+        // Cache canvas dimensions
+        const w = p.width;
+        const h = p.height;
+        
         // Rest state colors (soft white/ice blue for clean look on sky)
         const restWhite = p.color(255, 255, 255);
         const restIceBlue = p.color(200, 230, 255);
@@ -1242,8 +1264,8 @@ function initProjectAnimations() {
           const numParticles = 80;
           for (let i = 0; i < numParticles; i++) {
             tba1Particles.push({
-              x: p.random(p.width),
-              y: p.random(p.height),
+              x: p.random(w),
+              y: p.random(h),
               vx: p.random(-1, 1),
               vy: p.random(-1, 1),
               noiseX: p.random(1000),
@@ -1280,10 +1302,10 @@ function initProjectAnimations() {
           particle.y += particle.vy;
           
           // Wrap around edges
-          if (particle.x < 0) particle.x = p.width;
-          if (particle.x > p.width) particle.x = 0;
-          if (particle.y < 0) particle.y = p.height;
-          if (particle.y > p.height) particle.y = 0;
+          if (particle.x < 0) particle.x = w;
+          if (particle.x > w) particle.x = 0;
+          if (particle.y < 0) particle.y = h;
+          if (particle.y > h) particle.y = 0;
           
           // Update noise offsets
           particle.noiseX += 0.01;
@@ -1301,7 +1323,7 @@ function initProjectAnimations() {
         p.stroke(p.red(activeColor), p.green(activeColor), p.blue(activeColor), 50 + hoverProgress * 50);
         p.strokeWeight(1);
         
-        const connectionDistance = p.width * 0.15;
+        const connectionDistance = w * 0.15;
         for (let i = 0; i < tba1Particles.length; i++) {
           for (let j = i + 1; j < tba1Particles.length; j++) {
             const dx = tba1Particles[i].x - tba1Particles[j].x;
@@ -1320,6 +1342,10 @@ function initProjectAnimations() {
       }
 
       function drawTBA2(p) {
+        // Cache canvas dimensions
+        const w = p.width;
+        const h = p.height;
+        
         // Rest state colors (soft white/ice blue for clean look on sky)
         const restWhite = p.color(255, 255, 255);
         const restIceBlue = p.color(200, 230, 255);
@@ -1335,8 +1361,8 @@ function initProjectAnimations() {
         if (tba2GlitchLines.length === 0) {
           for (let i = 0; i < 20; i++) {
             tba2GlitchLines.push({
-              x: p.random(p.width),
-              y: p.random(p.height),
+              x: p.random(w),
+              y: p.random(h),
               length: p.random(20, 80),
               angle: p.random(p.TWO_PI),
               speed: p.random(1, 3),
@@ -1356,9 +1382,9 @@ function initProjectAnimations() {
             line.life--;
             
             // Reset if off screen or expired
-            if (line.x < -50 || line.x > p.width + 50 || line.y < -50 || line.y > p.height + 50 || line.life <= 0) {
-              line.x = p.random(p.width);
-              line.y = p.random(p.height);
+            if (line.x < -50 || line.x > w + 50 || line.y < -50 || line.y > h + 50 || line.life <= 0) {
+              line.x = p.random(w);
+              line.y = p.random(h);
               line.angle = p.random(p.TWO_PI);
               line.life = p.random(30, 60);
             }
@@ -1382,6 +1408,12 @@ function initProjectAnimations() {
       }
 
       function drawTBA3(p) {
+        // Cache canvas dimensions
+        const w = p.width;
+        const h = p.height;
+        const cx = w / 2;
+        const cy = h / 2;
+        
         // Rest state colors (soft white/ice blue for clean look on sky)
         const restWhite = p.color(255, 255, 255);
         const restIceBlue = p.color(200, 230, 255);
@@ -1393,15 +1425,12 @@ function initProjectAnimations() {
         const restColor = p.lerpColor(restWhite, restIceBlue, 0.3);
         const activeColor = p.lerpColor(restColor, hotPink, hoverProgress);
         
-        const cx = p.width / 2;
-        const cy = p.height / 2;
-        
         // Create new pulse every 1.5 seconds (heartbeat rhythm)
         const currentTime = p.millis();
         if (currentTime - tba3LastPulse > 1500) {
           tba3Pulses.push({
             radius: 0,
-            maxRadius: p.width * 0.6,
+            maxRadius: w * 0.6,
             life: 60,
             maxLife: 60
           });
@@ -1512,6 +1541,10 @@ function initProjectAnimations() {
       
       // Placeholder animations
       function drawPlaceholder1(p) {
+        // Cache canvas dimensions
+        const w = p.width;
+        const h = p.height;
+        
         // Particle swarm (Purple)
         const t = p.frameCount * 0.01;
         const numParticles = 50;
@@ -1520,8 +1553,8 @@ function initProjectAnimations() {
         if (placeholder1Particles.length === 0) {
           for (let i = 0; i < numParticles; i++) {
             placeholder1Particles.push({
-              x: p.random(p.width),
-              y: p.random(p.height),
+              x: p.random(w),
+              y: p.random(h),
               vx: p.random(-1, 1),
               vy: p.random(-1, 1),
               size: p.random(2, 4)
@@ -1533,8 +1566,8 @@ function initProjectAnimations() {
           particle.x += particle.vx;
           particle.y += particle.vy;
           
-          if (particle.x < 0 || particle.x > p.width) particle.vx *= -1;
-          if (particle.y < 0 || particle.y > p.height) particle.vy *= -1;
+          if (particle.x < 0 || particle.x > w) particle.vx *= -1;
+          if (particle.y < 0 || particle.y > h) particle.vy *= -1;
           
           const noiseX = p.noise(particle.x * 0.01, t) * 2 - 1;
           const noiseY = p.noise(particle.y * 0.01, t + 100) * 2 - 1;
@@ -1548,11 +1581,15 @@ function initProjectAnimations() {
       }
       
       function drawPlaceholder2(p) {
+        // Cache canvas dimensions
+        const w = p.width;
+        const h = p.height;
+        const cx = w / 2;
+        const cy = h / 2;
+        
         // Rotating geometric shapes (Teal)
         const t = p.frameCount * 0.02;
         const accentColor = p.color(0, 206, 209); // Dark turquoise
-        const cx = p.width / 2;
-        const cy = p.height / 2;
         
         p.push();
         p.translate(cx, cy);
@@ -1561,7 +1598,7 @@ function initProjectAnimations() {
         for (let i = 0; i < 6; i++) {
           p.push();
           p.rotate((p.TWO_PI / 6) * i);
-          p.translate(0, -p.width * 0.15);
+          p.translate(0, -w * 0.15);
           p.rotate(-t * 2);
           
           p.fill(p.red(accentColor), p.green(accentColor), p.blue(accentColor), 120);
@@ -1574,6 +1611,10 @@ function initProjectAnimations() {
       }
       
       function drawPlaceholder3(p) {
+        // Cache canvas dimensions
+        const w = p.width;
+        const h = p.height;
+        
         // Wave patterns (Pink)
         const t = p.frameCount * 0.015;
         const accentColor = p.color(255, 20, 147); // Deep pink
@@ -1584,12 +1625,12 @@ function initProjectAnimations() {
         p.strokeWeight(2);
         
         for (let i = 0; i < numWaves; i++) {
-          const y = (p.height / (numWaves + 1)) * (i + 1);
+          const y = (h / (numWaves + 1)) * (i + 1);
           const amp = 20 + i * 5;
           const freq = 0.02 + i * 0.01;
           
           p.beginShape();
-          for (let x = 0; x < p.width; x += 2) {
+          for (let x = 0; x < w; x += 2) {
             const waveY = y + p.sin(x * freq + t * 50) * amp;
             const alpha = 150 - i * 20;
             p.stroke(p.red(accentColor), p.green(accentColor), p.blue(accentColor), alpha);
@@ -1602,6 +1643,10 @@ function initProjectAnimations() {
       }
       
       function drawPlaceholder4(p) {
+        // Cache canvas dimensions
+        const w = p.width;
+        const h = p.height;
+        
         // Grid network (Cyan)
         const t = p.frameCount * 0.01;
         const accentColor = p.color(0, 255, 255); // Cyan
@@ -1609,11 +1654,11 @@ function initProjectAnimations() {
         const nodes = [];
         
         if (placeholder4Nodes.length === 0) {
-          for (let x = 0; x < p.width; x += p.width / gridSize) {
-            for (let y = 0; y < p.height; y += p.height / gridSize) {
+          for (let x = 0; x < w; x += w / gridSize) {
+            for (let y = 0; y < h; y += h / gridSize) {
               placeholder4Nodes.push({
-                x: x + p.width / (gridSize * 2),
-                y: y + p.height / (gridSize * 2),
+                x: x + w / (gridSize * 2),
+                y: y + h / (gridSize * 2),
                 pulse: p.random(p.TWO_PI)
               });
             }
@@ -1637,7 +1682,7 @@ function initProjectAnimations() {
               placeholder4Nodes[i].x, placeholder4Nodes[i].y,
               placeholder4Nodes[j].x, placeholder4Nodes[j].y
             );
-            if (dist < p.width * 0.25) {
+            if (dist < w * 0.25) {
               p.line(
                 placeholder4Nodes[i].x, placeholder4Nodes[i].y,
                 placeholder4Nodes[j].x, placeholder4Nodes[j].y
@@ -1648,15 +1693,19 @@ function initProjectAnimations() {
       }
       
       function drawPlaceholder5(p) {
+        // Cache canvas dimensions
+        const w = p.width;
+        const h = p.height;
+        const cx = w / 2;
+        const cy = h / 2;
+        
         // Orbiting circles (Magenta)
         const t = p.frameCount * 0.02;
         const accentColor = p.color(255, 0, 255); // Magenta
-        const cx = p.width / 2;
-        const cy = p.height / 2;
         const numOrbits = 3;
         
         for (let i = 0; i < numOrbits; i++) {
-          const radius = (p.width * 0.15) + (i * p.width * 0.1);
+          const radius = (w * 0.15) + (i * w * 0.1);
           const angle = t + (i * p.TWO_PI / numOrbits);
           const x = cx + p.cos(angle) * radius;
           const y = cy + p.sin(angle) * radius;
@@ -1673,6 +1722,10 @@ function initProjectAnimations() {
       }
       
       function drawPlaceholder6(p) {
+        // Cache canvas dimensions
+        const w = p.width;
+        const h = p.height;
+        
         // Flowing stream of particles (Coral/Salmon)
         const t = p.frameCount * 0.015;
         const accentColor = p.color(255, 127, 80); // Coral
@@ -1682,8 +1735,8 @@ function initProjectAnimations() {
           p.placeholder6Particles = [];
           for (let i = 0; i < numParticles; i++) {
             p.placeholder6Particles.push({
-              x: p.random(p.width),
-              y: p.random(p.height),
+              x: p.random(w),
+              y: p.random(h),
               speed: p.random(0.5, 2),
               size: p.random(3, 6),
               phase: p.random(p.TWO_PI)
@@ -1694,12 +1747,12 @@ function initProjectAnimations() {
         p.placeholder6Particles.forEach((particle, index) => {
           // Move particles in a flowing wave pattern
           particle.x += particle.speed;
-          particle.y = p.height / 2 + p.sin(particle.x * 0.02 + particle.phase + t) * (p.height * 0.3);
+          particle.y = h / 2 + p.sin(particle.x * 0.02 + particle.phase + t) * (h * 0.3);
           
           // Wrap around horizontally
-          if (particle.x > p.width + 20) {
+          if (particle.x > w + 20) {
             particle.x = -20;
-            particle.y = p.random(p.height);
+            particle.y = p.random(h);
           }
           
           // Draw particle with trail effect
@@ -1711,7 +1764,7 @@ function initProjectAnimations() {
           // Draw small trailing particles
           for (let i = 1; i <= 3; i++) {
             const trailX = particle.x - i * particle.speed * 2;
-            const trailY = particle.y - p.sin(particle.x * 0.02 + particle.phase + t - i * 0.1) * (p.height * 0.3);
+            const trailY = particle.y - p.sin(particle.x * 0.02 + particle.phase + t - i * 0.1) * (h * 0.3);
             const trailAlpha = alpha * (1 - i * 0.3);
             if (trailAlpha > 20 && trailX > 0) {
               p.fill(p.red(accentColor), p.green(accentColor), p.blue(accentColor), trailAlpha);

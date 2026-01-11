@@ -996,21 +996,25 @@ const immersiveScroll = (p) => {
    * @param {number} intensity - Zone intensity (0-1)
    */
   function drawAuroraElements(intensity) {
+    // Cache canvas dimensions
+    const w = p.width;
+    const h = p.height;
+    
     // Draw aurora waves
-    const baseHeight = p.height * 0.5 - maxWaveHeight;
+    const baseHeight = h * 0.5 - maxWaveHeight;
     const baselineOffsets = [];
     const secondWaveOffsets = [];
     
     // Increased sample step for better performance (was 15, now 20)
     const sampleStep = 20;
     
-    for (let i = 0; i < p.width; i += sampleStep) {
+    for (let i = 0; i < w; i += sampleStep) {
       const waveOffset = p.noise(i * noiseScale, yPosNoiseOffset) * maxWaveHeight + 
                          Math.sin(i * 0.004) * maxWaveHeight * 10 + i * 0.2;
       baselineOffsets.push(baseHeight + waveOffset);
       const secondWaveOffset = p.noise(i * noiseScale, yPosNoiseOffset + 1000) * maxWaveHeight * 0.5 + 
-                               Math.sin(i * 0.009) * maxWaveHeight * 5 + (p.width - i) * 0.1;
-      secondWaveOffsets.push(p.height * 0.35 + secondWaveOffset);
+                               Math.sin(i * 0.009) * maxWaveHeight * 5 + (w - i) * 0.1;
+      secondWaveOffsets.push(h * 0.35 + secondWaveOffset);
     }
     
     // Draw aurora waves with L-system based stroke weights
@@ -1019,7 +1023,7 @@ const immersiveScroll = (p) => {
       const x = i * sampleStep;
       const baseY = baselineOffsets[i];
       const secondBaseY = secondWaveOffsets[i];
-      const lineHeight = p.map(p.noise(x * noiseScale, yPosNoiseOffset), 0, 1.5, 0, p.height - 2);
+      const lineHeight = p.map(p.noise(x * noiseScale, yPosNoiseOffset), 0, 1.5, 0, h - 2);
       
       const strokeIndex = i % auroraSentence.length;
       // Increased stroke weight multiplier for brighter aurora
@@ -1053,8 +1057,8 @@ const immersiveScroll = (p) => {
       }
       
       // Second wave layer - brighter and more visible
-      if (intensity > 0.2 && secondBaseY > 0 && secondBaseY < p.height) {
-        const secondLineHeight = Math.min(maxHeight * 0.8, p.height * 0.5);
+      if (intensity > 0.2 && secondBaseY > 0 && secondBaseY < h) {
+        const secondLineHeight = Math.min(maxHeight * 0.8, h * 0.5);
         for (let j = 0; j < secondLineHeight; j += verticalStep) {
           const gradientRatio = j / secondLineHeight;
           const interColor = p.lerpColor(auroraGreen, auroraPurple, gradientRatio);
