@@ -892,6 +892,7 @@ textarea.text-field {
 .social-link {
     flex: 0 0 calc(50% - 7.5px);
     max-width: calc(50% - 7.5px);
+    width: 100%;
     padding: 14px 20px;
     display: flex;
     align-items: center;
@@ -899,7 +900,7 @@ textarea.text-field {
     gap: 0;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid var(--glass-border);
-    border-radius: 8px;
+    border-radius: 8px !important;
     color: var(--text-primary);
     text-decoration: none;
     font-family: 'Rajdhani', sans-serif;
@@ -908,7 +909,9 @@ textarea.text-field {
     transition: all 0.3s ease;
     text-align: right;
     min-height: 50px;
+    height: auto;
     position: relative;
+    box-sizing: border-box;
 }
 
 .social-icon {
@@ -923,9 +926,6 @@ textarea.text-field {
 .social-link span {
     margin-left: auto;
     text-align: right;
-}
-
-.social-link span {
     display: inline-block;
 }
 
