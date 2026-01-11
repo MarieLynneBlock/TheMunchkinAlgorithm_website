@@ -6,11 +6,20 @@
 
 **Welcome to my digital `.world`**
 
-[![Website](https://img.shields.io/badge/🌐_Live_Experience-themunchkinalgorithm.world-00d4ff?style=for-the-badge)](https://themunchkinalgorithm.world)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
-[![p5.js](https://img.shields.io/badge/p5.js-1.7.0-ED225D?style=for-the-badge&logo=p5.js)](https://p5js.org/)
-
 *This repo isn't just a portfolio website; it's a **scrolling experience** disguised as a professional resume.*
+
+</div>
+
+
+<!-- Tools & Technology -->
+
+<div align="center">
+
+   [![Website Badge](https://img.shields.io/badge/-Live_Experience-3B4252?style=flat&logo=globe&logoColor=EBCB8B)](https://themunchkinalgorithm.world)
+   ![p5.js Badge](https://img.shields.io/badge/-p5.js-3B4252?style=flat&logo=p5.js&logoColor=ED225D)
+   ![HTML5 Badge](https://img.shields.io/badge/-HTML5-3B4252?style=flat&logo=html5&logoColor=EBCB8B)
+   ![CSS3 Badge](https://img.shields.io/badge/-CSS3-3B4252?style=flat&logo=css3&logoColor=8FBCBB)
+   ![JavaScript Badge](https://img.shields.io/badge/-JavaScript-3B4252?style=flat&logo=javascript&logoColor=D08770)
 
 </div>
 
