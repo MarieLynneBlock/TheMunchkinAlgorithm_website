@@ -13,6 +13,8 @@
     --accent-color: #a32727;
     --aurora-green: #00ffb4;
     --aurora-purple: #9632c8;
+    --sundown-orange: #FF8C42;
+    --sundown-purple: #9D4EDD;
 }
 
 body {
@@ -682,7 +684,7 @@ body {
 
 .column-title {
     font-family: 'Orbitron', sans-serif;
-    color: var(--aurora-green);
+    color: var(--sundown-purple);
     font-size: 1.2rem;
     margin-bottom: 20px;
     text-transform: uppercase;
@@ -692,6 +694,11 @@ body {
 .skills-list {
     list-style: none;
     padding: 0;
+}
+
+.skills-list li small {
+    font-size: 0.75em;
+    opacity: 0.85;
 }
 
 .skills-list li {
@@ -707,7 +714,7 @@ body {
     content: '▶';
     position: absolute;
     left: 0;
-    color: var(--aurora-purple);
+    color: #FFE5B4;
     font-size: 0.8rem;
     top: 3px;
 }
