@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="48" fill="#0a1929" stroke="#4a90e2" stroke-width="2"/>
+  
+  <!-- Globe grid lines (longitude) -->
+  <ellipse cx="50" cy="50" rx="40" ry="20" fill="none" stroke="#6bb6ff" stroke-width="1.5" opacity="0.6"/>
+  <ellipse cx="50" cy="50" rx="20" ry="40" fill="none" stroke="#6bb6ff" stroke-width="1.5" opacity="0.6"/>
+  
+  <!-- Globe grid lines (latitude) -->
+  <ellipse cx="50" cy="30" rx="35" ry="8" fill="none" stroke="#4a90e2" stroke-width="1" opacity="0.5"/>
+  <ellipse cx="50" cy="50" rx="40" ry="10" fill="none" stroke="#4a90e2" stroke-width="1" opacity="0.5"/>
+  <ellipse cx="50" cy="70" rx="35" ry="8" fill="none" stroke="#4a90e2" stroke-width="1" opacity="0.5"/>
+  
+  <!-- Central connection point / node -->
+  <circle cx="50" cy="50" r="4" fill="#00d4ff" opacity="0.9"/>
+  <circle cx="50" cy="50" r="2" fill="#ffffff"/>
+  
+  <!-- Small accent dots representing data points -->
+  <circle cx="30" cy="40" r="1.5" fill="#6bb6ff" opacity="0.8"/>
+  <circle cx="70" cy="45" r="1.5" fill="#6bb6ff" opacity="0.8"/>
+  <circle cx="45" cy="65" r="1.5" fill="#6bb6ff" opacity="0.8"/>
+  <circle cx="65" cy="60" r="1.5" fill="#6bb6ff" opacity="0.8"/>
+</svg>
+

@@ -71,6 +71,9 @@ env/
 *.tar.gz
 *.rar
 
+# EmailJS Config (for local development)
+emailjs-config.js
+
 
 
 
