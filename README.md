@@ -1,27 +1,30 @@
 <div align="center">
 
-# ✨ The Munchkin Algorithm ✨
+# THE MUNCHKIN ALGORITHM
 
-> **By day, I optimise algorithms for efficiency. By night, I build them to make you *feel* something.**
+`By day, I optimise algorithms for efficiency.`<br>
+`By night, I build them to make you feel something.`
 
-**Welcome to my digital `.world`**
+<br>
 
-*This repo isn't just a portfolio website; it's a **scrolling experience** disguised as a professional resume.*
+**Welcome to this digital `.world`**
+
+This repo isn't just a portfolio website; it's a **scrolling experience** in disguise.
+
+<a href="https://themunchkinalgorithm.world">
+  <img src="https://img.shields.io/badge/ENTER-THE_.WORLD-ff0055?style=for-the-badge&logo=globe&logoColor=white" height="50">
+</a>
+
+<br><br>
+
+<img src="https://img.shields.io/badge/-p5.js-3B4252?style=flat&logo=p5.js&logoColor=ED225D" alt="p5.js Badge"/>
+<img src="https://img.shields.io/badge/-HTML5-3B4252?style=flat&logo=html5&logoColor=EBCB8B" alt="HTML5 Badge"/>
+<img src="https://img.shields.io/badge/-CSS3-3B4252?style=flat&logo=css3&logoColor=8FBCBB" alt="CSS3 Badge"/>
+<img src="https://img.shields.io/badge/-JavaScript-3B4252?style=flat&logo=javascript&logoColor=D08770" alt="JavaScript Badge"/>
 
 </div>
 
 
-<!-- Tools & Technology -->
-
-<div align="center">
-
-   [![Website Badge](https://img.shields.io/badge/-Live_Experience-3B4252?style=flat&logo=globe&logoColor=EBCB8B)](https://themunchkinalgorithm.world)
-   ![p5.js Badge](https://img.shields.io/badge/-p5.js-3B4252?style=flat&logo=p5.js&logoColor=ED225D)
-   ![HTML5 Badge](https://img.shields.io/badge/-HTML5-3B4252?style=flat&logo=html5&logoColor=EBCB8B)
-   ![CSS3 Badge](https://img.shields.io/badge/-CSS3-3B4252?style=flat&logo=css3&logoColor=8FBCBB)
-   ![JavaScript Badge](https://img.shields.io/badge/-JavaScript-3B4252?style=flat&logo=javascript&logoColor=D08770)
-
-</div>
 
 ---
 
@@ -198,10 +201,8 @@ This project is open source and available under the [MIT License](LICENSE).
 
 <div align="center">
 
-**Made with ❤️ and a lot of ☕**
-
 **Happy Scrolling!** 🖱️✨
 
-[⬆ Back to Top](#-the-munchkin-algorithm-)
-
 </div>
+
+<p align=center> <sub> Created with 🫀 and 🧠 ... and a lot of coffee ☕️ &nbsp;&nbsp; by Marie-Lynne Block &nbsp;&nbsp;&nbsp; ©2026 </sub> </p>
