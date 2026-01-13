@@ -25,34 +25,25 @@ This repo isn't just a portfolio website; it's a **scrolling experience** in dis
 </div>
 
 
-
 ---
 
-## 🎭 The Experience
+## Concept & Architecture
 
-### 🚀 The Journey (Scroll to Experience)
+### The "Living Canvas" Approach 🖼️
+Unlike traditional portfolios that serve static media, this site operates as a single, continuous **generative simulation**. 
 
-The entire background is powered by **p5.js**. It doesn't play a video; it *renders* the universe in real-time based on your scroll behaviour.
+The background is a reactive **p5.js** canvas that listens to scroll velocity and position, rendering the environment in real-time. The narrative transitions from the logic of space (vectors and geometry) to the organic chaos of the deep sea (recursive growth and noise functions).
 
-**Can you:**
-- 🚀 Make the rocket fly?
-- 💫 Make a wish on a falling star?
-- 🪼 Reach the jellyfish?
-- 🌊 Dive into the deep sea?
+<br>
 
-### 🎨 The "No Static Images" Manifesto
+### The Zero-Asset Constraint 🔗
+To challenge standard web development practices, I built this project under a strict constraint: **0% Static Assets, 100% Executable Code.**
+There are no JPEGs, PNGs, or GIFs loaded for the UI. Every visual element—from the auroras to the coral reefs—is drawn mathematically at runtime, and I'm repurposing **vectors, geometry, recursive growth, noise functions, e.g.** as tools for organic expression.
 
-I have a strict rule for this `.world`:
+<br>
+<br>
 
-> **Every pixel must be separately programmed.**
-
-| ❌ Not Allowed | ✅ Allowed |
-|:---:|:---:|
-| JPEGs | 100% Code |
-| PNGs | Generative Art |
-| GIFs | Real-time Rendering |
-
-> **Legal Disclaimer:** The favicon is a static image because browser security rules are boring and won't let me render a canvas there yet. *sadface.jpg* 🤪
+<sub>**Disclaimer:** The favicon is a static image because browser security rules are boring and won't let me render a canvas there yet. 😒</sub>
 
 ---
 
